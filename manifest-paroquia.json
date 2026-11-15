@@ -1,0 +1,24 @@
+{
+  "name": "Paróquia São João Bosco",
+  "short_name": "Paróquia SJB",
+  "description": "Aplicativo oficial da Paróquia São João Bosco - Nova Serrana/MG",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#4b2d6e",
+  "theme_color": "#4b2d6e",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icone-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icone-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
