@@ -3,93 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#2e2339">
+    <meta name="theme-color" content="#4b2d6e">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Gestão Paroquial">
-    <title>Gestão Paroquial - Acesso Restrito</title>
+    <title>Portal de Gestão - Paróquia São João Bosco</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
         :root {
-            --bg: #1a1523;
-            --card: #2e2339;
-            --primaria: #4b2d6e;
+            --roxo: #4b2d6e;
+            --roxo-2: #6d4a96;
+            --roxo-claro: #efe8f7;
             --dourado: #c9a24b;
-            --texto: #ffffff;
-            --cinza: #a89bb3;
+            --dourado-escuro: #a07f2c;
+            --creme: #faf6ee;
+            --texto: #2e2339;
+            --cinza: #7a6f85;
+            --borda: #e4dcee;
+            --erro: #b3392f;
+            --safe-b: env(safe-area-inset-bottom, 0px);
         }
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        [hidden] { display: none !important; }
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: var(--bg); color: var(--texto);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            min-height: 100vh; padding: 20px;
+            font-family: 'Segoe UI', system-ui, -apple-system, Arial, sans-serif;
+            background: var(--creme); color: var(--texto); min-height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            background: radial-gradient(circle at 50% -10%, rgba(201,162,75,.35), transparent 55%),
+                        linear-gradient(160deg, #3a2056 0%, #4b2d6e 45%, #6d4a96 100%);
+            position: relative; overflow: hidden; padding: 24px 18px;
         }
-        .logo-area { text-align: center; margin-bottom: 40px; }
-        .logo-area i { font-size: 3rem; color: var(--dourado); margin-bottom: 15px; }
-        .logo-area h1 { font-family: Georgia, serif; font-size: 1.5rem; font-weight: normal; }
-        .logo-area p { color: var(--cinza); font-size: 0.9rem; margin-top: 5px; }
-        
-        .grid-menu {
-            display: grid; grid-template-columns: 1fr; gap: 15px; width: 100%; max-width: 400px;
-        }
-        .card-btn {
-            display: flex; align-items: center; gap: 15px; padding: 20px;
-            background: var(--card); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px;
-            color: var(--texto); text-decoration: none; transition: transform 0.2s;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-        .card-btn:active { transform: scale(0.97); }
-        .card-btn i { font-size: 1.5rem; color: var(--dourado); width: 40px; text-align: center; }
-        .card-btn div h2 { font-size: 1.1rem; font-weight: 600; margin-bottom: 3px; }
-        .card-btn div p { font-size: 0.8rem; color: var(--cinza); }
+        h1, h2, h3 { font-family: Georgia, 'Times New Roman', serif; font-weight: 700; }
+        svg { display: block; }
 
-        /* Botão de Sair */
-        .btn-sair {
-            margin-top: 30px; background: none; border: 1px solid var(--cinza); color: var(--cinza);
-            padding: 10px 20px; border-radius: 20px; cursor: pointer; font-size: 0.9rem;
+        /* Elementos decorativos de fundo */
+        body::before, body::after { content: ''; position: absolute; border-radius: 50%; border: 1px solid rgba(201,162,75,.25); }
+        body::before { width: 520px; height: 520px; top: -200px; right: -220px; }
+        body::after  { width: 380px; height: 380px; bottom: -160px; left: -160px; }
+
+        .login-card {
+            position: relative; z-index: 1; width: 100%; max-width: 400px; background: var(--creme);
+            border-radius: 24px; padding: 36px 26px 30px; text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,.35); border-top: 5px solid var(--dourado);
         }
+        .cruz-logo {
+            width: 76px; height: 76px; margin: -74px auto 14px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--roxo), var(--roxo-2)); border: 4px solid var(--dourado);
+            display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 16px rgba(0,0,0,.3);
+        }
+        .cruz-logo svg { width: 36px; height: 36px; fill: var(--dourado); }
+        .login-card h1 { font-size: 1.45rem; color: var(--roxo); line-height: 1.2; }
+        .login-card .sub { color: var(--dourado-escuro); font-weight: 700; letter-spacing: 1.5px; font-size: .78rem; text-transform: uppercase; margin-top: 6px; }
+        
+        .divisor { display: flex; align-items: center; gap: 10px; margin: 18px 0 22px; }
+        .divisor::before, .divisor::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--dourado), transparent); }
+        .divisor svg { width: 14px; height: 14px; fill: var(--dourado); }
+
+        /* Grid de Botões */
+        .grid-menu { display: grid; gap: 12px; text-align: left; }
+        .card-btn {
+            display: flex; align-items: center; gap: 16px; padding: 16px 20px;
+            background: #fff; border: 1.5px solid var(--borda); border-radius: 16px;
+            color: var(--texto); text-decoration: none; transition: transform .15s, border-color .15s;
+            box-shadow: 0 4px 12px rgba(75,45,110,.06);
+        }
+        .card-btn:active { transform: scale(.97); border-color: var(--roxo-2); }
+        .card-btn i { font-size: 1.6rem; color: var(--roxo); width: 40px; text-align: center; }
+        .card-btn div h2 { font-size: 1.1rem; color: var(--roxo); margin-bottom: 2px; font-family: 'Segoe UI', system-ui, sans-serif; font-weight: 700; }
+        .card-btn div p { font-size: 0.82rem; color: var(--cinza); }
+
+        .btn-sair {
+            margin-top: 24px; background: transparent; border: 1.5px solid var(--borda); color: var(--cinza);
+            width: 100%; padding: 12px 20px; border-radius: 12px; cursor: pointer; font-size: .9rem; font-weight: 700;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-sair:active { background: var(--roxo-claro); color: var(--roxo); }
     </style>
 </head>
 <body>
 
-    <div class="logo-area">
-        <i class="fas fa-shield-halved"></i>
-        <h1>Portal de Gestão</h1>
-        <p>Paróquia São João Bosco</p>
+    <div class="login-card">
+        <div class="cruz-logo"><svg viewBox="0 0 24 24"><path d="M10 2h4v6h6v4h-6v10h-4V12H4V8h6z"/></svg></div>
+        <h1>Paróquia São João Bosco</h1>
+        <p class="sub">Portal de Gestão</p>
+        
+        <div class="divisor"><svg viewBox="0 0 24 24"><path d="M10 2h4v6h6v4h-6v10h-4V12H4V8h6z"/></svg></div>
+
+        <div class="grid-menu">
+            <!-- O "../" indica que os arquivos estão na pasta anterior (raiz) -->
+            <a href="../admin.html" class="card-btn">
+                <i class="fas fa-user-gear"></i>
+                <div>
+                    <h2>Painel Admin</h2>
+                    <p>Gerenciamento de Intenções</p>
+                </div>
+            </a>
+
+            <a href="../secretaria.html" class="card-btn">
+                <i class="fas fa-file-signature"></i>
+                <div>
+                    <h2>Secretaria</h2>
+                    <p>Documentos e registros</p>
+                </div>
+            </a>
+
+            <a href="../links.html" class="card-btn">
+                <i class="fas fa-link"></i>
+                <div>
+                    <h2>Links Úteis</h2>
+                    <p>Atalhos internos</p>
+                </div>
+            </a>
+        </div>
+
+        <button class="btn-sair" onclick="sessionStorage.clear(); location.href='../index.html';">
+            <i class="fas fa-arrow-left"></i> Voltar para o App Principal
+        </button>
     </div>
-
-    <div class="grid-menu">
-        <!-- O "../" indica que os arquivos estão na pasta anterior (raiz) -->
-        <a href="../admin.html" class="card-btn">
-            <i class="fas fa-user-gear"></i>
-            <div>
-                <h2>Painel Admin</h2>
-                <p>Gerenciamento geral</p>
-            </div>
-        </a>
-
-        <a href="../secretaria.html" class="card-btn">
-            <i class="fas fa-file-signature"></i>
-            <div>
-                <h2>Secretaria</h2>
-                <p>Documentos e registros</p>
-            </div>
-        </a>
-
-        <a href="../links.html" class="card-btn">
-            <i class="fas fa-link"></i>
-            <div>
-                <h2>Links Úteis</h2>
-                <p>Atalhos internos</p>
-            </div>
-        </a>
-    </div>
-
-    <!-- Botão para limpar a sessão (útil se você abrir no computador compartilhado) -->
-    <button class="btn-sair" onclick="sessionStorage.clear(); location.reload();">
-        <i class="fas fa-right-from-bracket"></i> Bloquear Acesso Novamente
-    </button>
 
 </body>
 </html>
