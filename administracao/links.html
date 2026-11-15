@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="robots" content="noindex, nofollow">
     <meta name="theme-color" content="#4b2d6e">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Gestão Paroquial">
     <title>Central de Acessos - Paróquia</title>
+    <link rel="manifest" href="manifest.json">
 
-    <!-- ============================================================ -->
-    <!-- INÍCIO DO CSS                                                -->
-    <!-- ============================================================ -->
     <style>
         :root {
             --roxo: #4b2d6e;
@@ -71,7 +71,6 @@
         .saudacao { font-family: Georgia, serif; font-style: italic; color: var(--cinza); font-size: .95rem; }
         .instrucao { color: var(--cinza); font-size: .9rem; margin: 14px 0 18px; }
 
-        /* ---------- Botões de acesso ---------- */
         .acessos { display: flex; flex-direction: column; gap: 12px; text-align: left; }
         .btn-acesso {
             display: flex; align-items: center; gap: 14px;
@@ -97,15 +96,9 @@
 
         .rodape { margin-top: 20px; font-size: .75rem; color: var(--cinza); }
     </style>
-    <!-- ============================================================ -->
-    <!-- FIM DO CSS                                                   -->
-    <!-- ============================================================ -->
 </head>
 <body>
 
-    <!-- ============================================================ -->
-    <!-- INÍCIO: CENTRAL DE ACESSOS                                   -->
-    <!-- ============================================================ -->
     <div class="central-card">
         <div class="cruz-logo">
             <svg viewBox="0 0 24 24"><path d="M10 2h4v6h6v4h-6v10h-4V12H4V8h6z"/></svg>
@@ -116,25 +109,23 @@
         <p class="saudacao">Louvado seja Nosso Senhor Jesus Cristo!</p>
         <p class="instrucao">Selecione a área que deseja acessar.</p>
 
-                <nav class="acessos">
-            <!-- O "../" faz o navegador voltar da pasta 'administracao' para a raiz -->
-            
-            <!-- Link para o App dos Fiéis -->
-            <a href="../index.html" class="btn-acesso btn-app">
+        <nav class="acessos">
+            <!-- App dos fiéis: abre o index da raiz direto na aba Comunidades -->
+            <a href="../index.html#comunidades" class="btn-acesso btn-app">
                 <span class="ico"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V10l7-5 7 5v11M9 21v-6h6v6M12 5V2M10.5 3.5h3"/></svg></span>
                 <span class="txt"><strong>App da Comunidade</strong><small>Liturgia, horários, avisos e orações</small></span>
                 <span class="seta">&#8250;</span>
             </a>
 
-            <!-- Link para o Painel do Padre -->
-            <a href="../admin.html" class="btn-acesso btn-padre">
+            <!-- Painel do Padre: administracao/admin.html -->
+            <a href="admin.html" class="btn-acesso btn-padre">
                 <span class="ico"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>
                 <span class="txt"><strong>Painel do Padre</strong><small>Área restrita ao pároco</small></span>
                 <span class="seta">&#8250;</span>
             </a>
 
-            <!-- Link para o Painel da Secretaria -->
-            <a href="../secretaria.html" class="btn-acesso btn-secretaria">
+            <!-- Painel da Secretaria: administracao/secretaria.html -->
+            <a href="secretaria.html" class="btn-acesso btn-secretaria">
                 <span class="ico"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9zM9 12h6M9 16h6"/></svg></span>
                 <span class="txt"><strong>Painel da Secretaria</strong><small>Avisos, horários, aniversários e Pascom</small></span>
                 <span class="seta">&#8250;</span>
@@ -143,9 +134,6 @@
 
         <p class="rodape">Acesso restrito aos responsáveis pelos painéis</p>
     </div>
-    <!-- ============================================================ -->
-    <!-- FIM: CENTRAL DE ACESSOS                                      -->
-    <!-- ============================================================ -->
 
 </body>
 </html>
