@@ -229,7 +229,7 @@
                 <div id="lista-publicas" class="lista" hidden></div>
             </div>
 
-            <!-- ===== ABA REFLEXÕES (NOVA) ===== -->
+            <!-- ===== ABA REFLEXÕES ===== -->
             <div id="painel-reflexoes" hidden>
                 <div class="boas-vindas" style="margin-bottom:14px">
                     <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8zm1-13h-2v6l5.25 3.15L17 12.23l-4-2.37z"/></svg></div>
@@ -320,9 +320,31 @@
             return isNaN(d) ? null : d;
         }
 
+        // ===== INÍCIO: NOVO — AUTENTICAÇÃO COM SUPORTE A SENHAS COM ACENTO + LEITURA DO ERRO REAL DO SERVIDOR =====
+        // btoa() quebra com acentos/emoji na senha; esta versão converte para UTF-8 antes.
+        function authPadre() {
+            const bytes = new TextEncoder().encode('padre:' + senhaSalva);
+            let bin = '';
+            bytes.forEach(b => { bin += String.fromCharCode(b); });
+            return 'Basic ' + btoa(bin);
+        }
+        // Lê a mensagem de erro que o servidor mandou (para sabermos o motivo real)
+        async function lerErro(resp, padrao) {
+            try {
+                const txt = await resp.text();
+                try {
+                    const j = JSON.parse(txt);
+                    if (j && j.erro) return j.erro;
+                } catch (_) {}
+                if (txt && txt.length < 200) return txt;
+            } catch (_) {}
+            return padrao + ' (código ' + resp.status + ')';
+        }
+        // ===== FIM: NOVO — AUTENTICAÇÃO / LEITURA DE ERRO =====
+
         async function buscarIntencoes() {
             const resposta = await fetch(`${URL_API}/admin/intencoes`, {
-                headers: { 'Authorization': 'Basic ' + btoa('padre:' + senhaSalva) }
+                headers: { 'Authorization': authPadre() }
             });
             if (resposta.status === 401) throw new Error('401');
             if (!resposta.ok) throw new Error('servidor');
@@ -448,10 +470,10 @@
         function extrairYouTubeId(url) {
             if (!url) return null;
             const padroes = [
-                /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/,
+                /(?:youtube\.com\/watch\?(?:.*&)?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/|youtube\.com\/live\/)([a-zA-Z0-9_-]{11})/,
                 /^([a-zA-Z0-9_-]{11})$/
             ];
-            for (const p of padroes) { const m = String(url).match(p); if (m) return m[1]; }
+            for (const p of padroes) { const m = String(url).trim().match(p); if (m) return m[1]; }
             return null;
         }
 
@@ -475,6 +497,7 @@
             if (!f) { arquivoVideo = null; posterBlob = null; return; }
             if (f.size > 100 * 1024 * 1024) { toast('Vídeo muito grande (máx 100 MB).'); e.target.value = ''; return; }
             arquivoVideo = f;
+            posterBlob = null;
             $('ref-video-nome').textContent = f.name;
 
             const url = URL.createObjectURL(f);
@@ -494,7 +517,7 @@
             };
         });
 
-        // Submit
+        // ===== INÍCIO: PUBLICAR REFLEXÃO (com mensagens de erro reais) =====
         $('form-reflexao').addEventListener('submit', async (e) => {
             e.preventDefault();
             const msg = $('msg-reflexao');
@@ -519,24 +542,28 @@
                     const id = extrairYouTubeId(urlYt);
                     if (!id) throw new Error('Link do YouTube inválido.');
                     video_url = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0`;
-                    poster_url = `https://img.youtube.com/vi/${id}/maxresdefault.jpg`;
+                    // hqdefault existe para TODOS os vídeos (maxresdefault nem sempre)
+                    poster_url = `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
                     video_tipo = 'youtube';
                 } else {
                     if (!arquivoVideo) throw new Error('Escolha um arquivo de vídeo.');
+                    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando vídeo...';
                     // 1) Envia vídeo + poster
                     const fd = new FormData();
                     fd.append('video', arquivoVideo);
                     if (posterBlob) fd.append('poster', posterBlob, 'poster.jpg');
                     const r = await fetch(`${URL_API}/admin/homilias/upload`, {
                         method: 'POST',
-                        headers: { 'Authorization': 'Basic ' + btoa('padre:' + senhaSalva) },
+                        headers: { 'Authorization': authPadre() },
                         body: fd
                     });
-                    if (!r.ok) throw new Error('Erro no upload.');
+                    if (r.status === 401) throw new Error('401');
+                    if (!r.ok) throw new Error(await lerErro(r, 'Erro no upload.'));
                     const dados = await r.json();
                     video_url = dados.video_url;
                     poster_url = dados.poster_url || '';
                     video_tipo = 'r2';
+                    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publicando...';
                 }
 
                 // 2) Publica
@@ -544,12 +571,12 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': 'Basic ' + btoa('padre:' + senhaSalva)
+                        'Authorization': authPadre()
                     },
                     body: JSON.stringify({ titulo, texto, video_url, video_tipo, poster_url, igreja, autor })
                 });
                 if (r2.status === 401) throw new Error('401');
-                if (!r2.ok) throw new Error('Erro ao publicar.');
+                if (!r2.ok) throw new Error(await lerErro(r2, 'Erro ao publicar.'));
 
                 toast('Reflexão publicada!');
                 $('form-reflexao').reset();
@@ -565,15 +592,16 @@
                 btn.innerHTML = '<i class="fas fa-paper-plane"></i> Publicar Reflexão';
             }
         });
+        // ===== FIM: PUBLICAR REFLEXÃO =====
 
-        // Lista de reflexões publicadas
+        // ===== INÍCIO: LISTA DE REFLEXÕES PUBLICADAS =====
         async function carregarReflexoesAdmin() {
             const el = $('lista-reflexoes-admin');
             try {
                 const r = await fetch(`${URL_API}/admin/homilias`, {
-                    headers: { 'Authorization': 'Basic ' + btoa('padre:' + senhaSalva) }
+                    headers: { 'Authorization': authPadre() }
                 });
-                if (!r.ok) throw new Error();
+                if (!r.ok) throw new Error(await lerErro(r, 'Erro ao carregar.'));
                 const dados = await r.json();
                 if (!Array.isArray(dados) || !dados.length) {
                     el.innerHTML = '<p class="vazio">Nenhuma reflexão publicada ainda.</p>';
@@ -584,20 +612,21 @@
                         <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
                             <div style="min-width:0;flex:1">
                                 <div style="font-size:.72rem;color:var(--dourado-escuro);font-weight:700;text-transform:uppercase">
-                                    ${h.igreja === 'todas' ? '🌐 Todas' : h.igreja === 'paroquia' ? '⛪ Paróquia' : '⛪ Carmo'} · ${h.video_tipo}
+                                    ${h.igreja === 'todas' ? '🌐 Todas' : h.igreja === 'paroquia' ? '⛪ Paróquia' : '⛪ Carmo'} · ${esc(h.video_tipo || '')}
                                 </div>
                                 <div class="nome" style="margin-top:4px">${esc(h.titulo)}</div>
                                 <div style="font-size:.82rem;color:var(--cinza);margin-top:6px">${esc(h.criado_em || '')}</div>
                             </div>
-                            <button type="button" class="btn-sair" style="background:#fbe4e1;color:var(--erro);border-color:#fbe4e1;flex:none" onclick="apagarReflexao(${h.id}, this)">
+                            <button type="button" class="btn-sair" style="background:#fbe4e1;color:var(--erro);border-color:#fbe4e1;flex:none" onclick="apagarReflexao(${Number(h.id)}, this)">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>
                     </div>`).join('');
             } catch (e) {
-                el.innerHTML = '<p style="color:var(--erro);text-align:center">Erro ao carregar.</p>';
+                el.innerHTML = `<p style="color:var(--erro);text-align:center">${esc(e.message || 'Erro ao carregar.')}</p>`;
             }
         }
+        // ===== FIM: LISTA DE REFLEXÕES PUBLICADAS =====
 
         async function apagarReflexao(id, btn) {
             if (!confirm('Apagar esta reflexão?')) return;
@@ -605,16 +634,17 @@
             try {
                 const r = await fetch(`${URL_API}/admin/homilias/${id}`, {
                     method: 'DELETE',
-                    headers: { 'Authorization': 'Basic ' + btoa('padre:' + senhaSalva) }
+                    headers: { 'Authorization': authPadre() }
                 });
-                if (!r.ok) throw new Error();
+                if (!r.ok) throw new Error(await lerErro(r, 'Erro ao apagar.'));
                 toast('Reflexão apagada.');
                 carregarReflexoesAdmin();
             } catch (e) {
-                toast('Erro ao apagar.');
+                toast(e.message || 'Erro ao apagar.');
                 btn.disabled = false;
             }
         }
     </script>
 </body>
 </html>
+<!-- ============================ FIM DO ARQUIVO ============================ -->
