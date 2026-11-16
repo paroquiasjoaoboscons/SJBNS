@@ -8,10 +8,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Painel do Padre - Paróquia São João Bosco</title>
-
-    <!-- ============================================================ -->
-    <!-- INÍCIO DO CSS                                                -->
-    <!-- ============================================================ -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --roxo: #4b2d6e;
@@ -45,16 +42,14 @@
         .btn:disabled { opacity: .6; cursor: default; }
 
         label { display: block; margin: 16px 0 6px; font-weight: 700; font-size: .88rem; color: var(--roxo); }
-        input[type="password"], input[type="search"], input[type="text"] {
+        input[type="password"], input[type="search"], input[type="text"], input[type="url"], textarea, select {
             width: 100%; padding: 13px 14px; border: 1.5px solid var(--borda); border-radius: 12px;
             background: #fff; color: var(--texto); font-size: 16px; font-family: inherit; outline: none;
             appearance: none; -webkit-appearance: none; transition: border-color .2s, box-shadow .2s;
         }
-        input:focus { border-color: var(--roxo-2); box-shadow: 0 0 0 3px rgba(109,74,150,.15); }
+        input:focus, textarea:focus, select:focus { border-color: var(--roxo-2); box-shadow: 0 0 0 3px rgba(109,74,150,.15); }
+        textarea { resize: vertical; }
 
-        /* ============================================================ */
-        /* TELA 1 — LOGIN                                               */
-        /* ============================================================ */
         #login-screen {
             min-height: 100vh; min-height: 100dvh; display: flex; align-items: center; justify-content: center;
             padding: 24px 18px; position: relative; overflow: hidden;
@@ -89,9 +84,6 @@
         .erro-login { color: var(--erro); text-align: center; font-weight: 700; font-size: .9rem; min-height: 1.2em; margin-top: 14px; }
         .rodape-login { margin-top: 18px; font-size: .75rem; color: var(--cinza); }
 
-        /* ============================================================ */
-        /* APP (após login)                                             */
-        /* ============================================================ */
         #app { padding-bottom: calc(24px + var(--safe-b)); }
         .topbar {
             position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 12px; color: #fff;
@@ -128,7 +120,7 @@
         @keyframes girar { to { transform: rotate(360deg); } }
 
         .segmento { display: flex; background: var(--roxo-claro); border-radius: 12px; padding: 4px; margin-bottom: 16px; }
-        .seg { flex: 1; border: none; background: none; padding: 11px 6px; border-radius: 9px; font-weight: 700; color: var(--roxo); font-size: .92rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .seg { flex: 1; border: none; background: none; padding: 11px 6px; border-radius: 9px; font-weight: 700; color: var(--roxo); font-size: .88rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
         .seg .qtd { background: var(--roxo); color: #fff; border-radius: 10px; padding: 1px 8px; font-size: .75rem; }
         .seg.ativo { background: #fff; box-shadow: 0 2px 6px rgba(75,45,110,.18); }
         .seg[data-aba="sigilosas"] .qtd { background: var(--erro); }
@@ -145,6 +137,22 @@
         .skel { height: 14px; border-radius: 7px; margin: 12px 0; background: linear-gradient(90deg, #eee 25%, #f8f8f8 50%, #eee 75%); background-size: 200% 100%; animation: brilho 1.2s infinite; }
         @keyframes brilho { to { background-position: -200% 0; } }
 
+        /* Painel de publicação de reflexões */
+        .painel-form { background: #fff; border-radius: 16px; padding: 18px; box-shadow: 0 3px 14px rgba(75,45,110,.1); margin-bottom: 14px; }
+        .painel-form .tabs { display: flex; background: var(--roxo-claro); border-radius: 10px; padding: 4px; margin-bottom: 14px; }
+        .painel-form .tab { flex: 1; border: none; background: none; padding: 10px; border-radius: 8px; font-weight: 700; color: var(--roxo); font-size: .88rem; cursor: pointer; }
+        .painel-form .tab.ativo { background: #fff; box-shadow: 0 2px 6px rgba(75,45,110,.18); }
+        .contador { text-align: right; font-size: .75rem; color: var(--cinza); margin-top: 4px; }
+        .linha-check { display: flex; align-items: center; gap: 10px; margin: 14px 0 4px; font-weight: 400; }
+        .linha-check input { width: 20px; height: 20px; accent-color: var(--roxo); flex: none; }
+        .preview-video { width: 100%; margin-top: 10px; border-radius: 12px; background: #000; max-height: 220px; }
+        .upload-box { border: 2px dashed var(--borda); border-radius: 12px; padding: 16px; text-align: center; cursor: pointer; transition: border-color .2s; }
+        .upload-box:hover { border-color: var(--roxo-2); }
+        .upload-box input[type="file"] { display: none; }
+        .upload-box .ico { font-size: 1.5rem; color: var(--roxo-2); margin-bottom: 6px; }
+        .upload-box small { color: var(--cinza); font-size: .78rem; display: block; margin-top: 4px; }
+        .upload-nome { font-size: .85rem; color: var(--roxo); font-weight: 700; margin-top: 8px; word-break: break-all; }
+
         #toast {
             position: fixed; left: 50%; top: calc(14px + env(safe-area-inset-top, 0px)); z-index: 200; transform: translate(-50%, -140%);
             transition: transform .3s; padding: 12px 20px; border-radius: 12px; color: #fff; font-weight: 700; font-size: .92rem;
@@ -152,14 +160,11 @@
         }
         #toast.mostrar { transform: translate(-50%, 0); }
     </style>
-    <!-- ============================================================ -->
-    <!-- FIM DO CSS                                                   -->
-    <!-- ============================================================ -->
 </head>
 <body>
 
     <!-- ============================================================ -->
-    <!-- INÍCIO: TELA 1 (LOGIN)                                       -->
+    <!-- TELA 1 — LOGIN                                               -->
     <!-- ============================================================ -->
     <div id="login-screen">
         <div class="login-card">
@@ -169,7 +174,6 @@
             <div class="divisor"><svg viewBox="0 0 24 24"><path d="M10 2h4v6h6v4h-6v10h-4V12H4V8h6z"/></svg></div>
             <p class="saudacao">Louvado seja Nosso Senhor Jesus Cristo!</p>
 
-            <!-- O <form> faz a tecla ENTER funcionar como "Entrar" -->
             <form id="form-login" autocomplete="on">
                 <label for="senha">Senha de acesso</label>
                 <div class="campo-senha">
@@ -182,20 +186,16 @@
             <p class="rodape-login">Área restrita ao pároco</p>
         </div>
     </div>
-    <!-- ============================================================ -->
-    <!-- FIM: TELA 1                                                  -->
-    <!-- ============================================================ -->
-
 
     <!-- ============================================================ -->
-    <!-- INÍCIO: APP (TELAS APÓS O LOGIN)                             -->
+    <!-- APP                                                          -->
     <!-- ============================================================ -->
     <div id="app" hidden>
         <header class="topbar">
             <div class="logo"><svg viewBox="0 0 24 24"><path d="M10 2h4v6h6v4h-6v10h-4V12H4V8h6z"/></svg></div>
             <div class="titulos">
                 <h1>Painel do Padre</h1>
-                <p>Paróquia São João Bosco · Intenções</p>
+                <p>Paróquia São João Bosco</p>
             </div>
             <button class="btn-sair" id="btn-sair" type="button">Sair</button>
         </header>
@@ -209,42 +209,98 @@
                 </div>
             </div>
 
-            <div class="barra-acoes">
-                <input type="search" id="busca" placeholder="Buscar por nome ou texto…" aria-label="Buscar intenções">
-                <button type="button" class="btn-atualizar" id="btn-atualizar">
-                    <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
-                    Atualizar
-                </button>
-            </div>
-
             <div class="segmento">
                 <button type="button" class="seg ativo" data-aba="sigilosas">Sigilosas <span class="qtd" id="qtd-sigilosas">0</span></button>
                 <button type="button" class="seg" data-aba="publicas">Públicas <span class="qtd" id="qtd-publicas">0</span></button>
+                <button type="button" class="seg" data-aba="reflexoes"><i class="fas fa-feather-alt"></i> Reflexões</button>
             </div>
 
-            <!-- ===== INÍCIO: LISTA SIGILOSAS ===== -->
-            <div id="lista-sigilosas" class="lista"><div class="skel"></div><div class="skel" style="width:70%"></div></div>
-            <!-- ===== FIM: LISTA SIGILOSAS ===== -->
+            <!-- ===== ABA SIGILOSAS / PÚBLICAS ===== -->
+            <div id="painel-intencoes">
+                <div class="barra-acoes">
+                    <input type="search" id="busca" placeholder="Buscar por nome ou texto…" aria-label="Buscar intenções">
+                    <button type="button" class="btn-atualizar" id="btn-atualizar">
+                        <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
+                        Atualizar
+                    </button>
+                </div>
 
-            <!-- ===== INÍCIO: LISTA PÚBLICAS ===== -->
-            <div id="lista-publicas" class="lista" hidden></div>
-            <!-- ===== FIM: LISTA PÚBLICAS ===== -->
+                <div id="lista-sigilosas" class="lista"><div class="skel"></div><div class="skel" style="width:70%"></div></div>
+                <div id="lista-publicas" class="lista" hidden></div>
+            </div>
+
+            <!-- ===== ABA REFLEXÕES (NOVA) ===== -->
+            <div id="painel-reflexoes" hidden>
+                <div class="boas-vindas" style="margin-bottom:14px">
+                    <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8zm1-13h-2v6l5.25 3.15L17 12.23l-4-2.37z"/></svg></div>
+                    <div>
+                        <h2>Publicar Reflexão</h2>
+                        <p>Ao publicar, aparece na Paróquia e nas comunidades escolhidas.<br>Máximo de <b>2 vídeos ativos</b> — o mais antigo é removido automaticamente.</p>
+                    </div>
+                </div>
+
+                <form id="form-reflexao" class="painel-form">
+                    <div class="tabs">
+                        <button type="button" class="tab ativo" data-fonte="youtube">YouTube (link)</button>
+                        <button type="button" class="tab" data-fonte="r2">Upload de vídeo</button>
+                    </div>
+
+                    <!-- Campo YouTube -->
+                    <div id="campo-youtube">
+                        <label for="ref-url-yt">Link do vídeo no YouTube *</label>
+                        <input type="url" id="ref-url-yt" placeholder="https://www.youtube.com/watch?v=XXXXXXX">
+                        <small style="color:var(--cinza);font-size:.78rem;display:block;margin-top:6px">Cole a URL normal do YouTube. A capa será gerada automaticamente.</small>
+                    </div>
+
+                    <!-- Campo Upload -->
+                    <div id="campo-r2" hidden>
+                        <label for="ref-video-file">Arquivo de vídeo (MP4, WEBM) *</label>
+                        <label class="upload-box" for="ref-video-file">
+                            <input type="file" id="ref-video-file" accept="video/mp4,video/webm,video/quicktime">
+                            <div class="ico"><i class="fas fa-cloud-upload-alt"></i></div>
+                            <div>Toque para escolher o vídeo</div>
+                            <small>Máx. 100 MB. A capa será extraída automaticamente.</small>
+                            <div class="upload-nome" id="ref-video-nome"></div>
+                        </label>
+                        <video id="ref-video-preview" class="preview-video" controls hidden></video>
+                    </div>
+
+                    <label for="ref-titulo">Título da reflexão *</label>
+                    <input type="text" id="ref-titulo" maxlength="140" placeholder="Ex: O Bom Pastor e nós">
+
+                    <label for="ref-texto">Texto complementar (opcional)</label>
+                    <textarea id="ref-texto" rows="4" maxlength="2000" placeholder="Uma frase, um versículo, uma meditação curta..."></textarea>
+                    <div class="contador"><span id="ref-cont">0</span>/2000</div>
+
+                    <label for="ref-igreja">Publicar em</label>
+                    <select id="ref-igreja">
+                        <option value="todas" selected>🌐 Todas as comunidades (recomendado)</option>
+                        <option value="paroquia">⛪ Somente Paróquia São João Bosco</option>
+                        <option value="carmo">⛪ Somente Nossa Senhora do Carmo</option>
+                    </select>
+
+                    <button type="submit" class="btn" id="btn-publicar-ref" style="margin-top:20px">
+                        <i class="fas fa-paper-plane"></i> Publicar Reflexão
+                    </button>
+                    <p id="msg-reflexao" class="erro-login" style="margin-top:12px"></p>
+                </form>
+
+                <div class="painel-form">
+                    <h3 style="font-family:Georgia,serif;color:var(--roxo);margin-bottom:12px">Reflexões Publicadas</h3>
+                    <div id="lista-reflexoes-admin"><div class="skel"></div><div class="skel" style="width:70%"></div></div>
+                </div>
+            </div>
         </main>
     </div>
-    <!-- ============================================================ -->
-    <!-- FIM: APP                                                     -->
-    <!-- ============================================================ -->
 
     <div id="toast" role="status"></div>
 
-    <!-- ============================================================ -->
-    <!-- INÍCIO DO JAVASCRIPT                                         -->
-    <!-- ============================================================ -->
     <script>
         const URL_API = 'https://api-paroquia.paroquiasjoaoboscons.workers.dev';
         let senhaSalva = '';
         let intencoes = [];
         let abaAtual = 'sigilosas';
+        let fonteReflexao = 'youtube';
 
         const $ = (id) => document.getElementById(id);
         const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -256,7 +312,6 @@
             clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('mostrar'), 3200);
         }
 
-        // Datas do banco vêm como "2026-11-09 18:30:00" (UTC); o Safari não lê esse formato direto
         function lerData(s) {
             if (!s) return null;
             let t = String(s);
@@ -274,14 +329,13 @@
             return resposta.json();
         }
 
-        /* ---------- LOGIN / LOGOUT ---------- */
+        /* ---------- LOGIN ---------- */
         $('ver-senha').addEventListener('click', () => {
             const mostrar = $('senha').type === 'password';
             $('senha').type = mostrar ? 'text' : 'password';
             $('ver-senha').textContent = mostrar ? 'Ocultar' : 'Mostrar';
         });
 
-        // O submit do <form> dispara no clique e também na tecla ENTER
         $('form-login').addEventListener('submit', async (e) => {
             e.preventDefault();
             const senhaInput = $('senha').value, msg = $('msg-login'), btn = $('btn-entrar');
@@ -295,7 +349,7 @@
                 entrarNoApp();
             } catch (erro) {
                 senhaSalva = '';
-                msg.textContent = erro.message === '401' ? 'Senha incorreta.' : 'Erro ao conectar. Verifique a internet.';
+                msg.textContent = erro.message === '401' ? 'Senha incorreta.' : 'Erro ao conectar.';
             } finally { btn.disabled = false; btn.textContent = 'Entrar'; }
         });
 
@@ -317,7 +371,6 @@
         }
         $('btn-sair').addEventListener('click', () => fazerLogout());
 
-        // Mantém a sessão ao atualizar a página (some ao fechar a aba)
         (async function restaurarSessao() {
             try {
                 const s = sessionStorage.getItem('padre_senha');
@@ -328,7 +381,18 @@
             } catch (_) { senhaSalva = ''; }
         })();
 
-        /* ---------- ATUALIZAR ---------- */
+        /* ---------- ABAS ---------- */
+        document.querySelectorAll('.seg').forEach(b => b.addEventListener('click', () => {
+            abaAtual = b.dataset.aba;
+            document.querySelectorAll('.seg').forEach(x => x.classList.toggle('ativo', x === b));
+            $('painel-intencoes').hidden = (abaAtual === 'reflexoes');
+            $('painel-reflexoes').hidden = (abaAtual !== 'reflexoes');
+            $('lista-sigilosas').hidden = abaAtual !== 'sigilosas';
+            $('lista-publicas').hidden = abaAtual !== 'publicas';
+            if (abaAtual === 'reflexoes') carregarReflexoesAdmin();
+        }));
+
+        /* ---------- REFRESH / BUSCA ---------- */
         async function carregarDados() {
             if (!senhaSalva) return;
             const btn = $('btn-atualizar');
@@ -338,21 +402,13 @@
                 desenhar();
             } catch (e) {
                 if (e.message === '401') fazerLogout('Sessão expirada. Entre novamente.');
-                else toast('Erro ao atualizar. Verifique a conexão.');
+                else toast('Erro ao atualizar.');
             } finally { btn.classList.remove('girando'); btn.disabled = false; }
         }
         $('btn-atualizar').addEventListener('click', carregarDados);
-
-        /* ---------- ABAS E BUSCA ---------- */
-        document.querySelectorAll('.seg').forEach(b => b.addEventListener('click', () => {
-            abaAtual = b.dataset.aba;
-            document.querySelectorAll('.seg').forEach(x => x.classList.toggle('ativo', x === b));
-            $('lista-sigilosas').hidden = abaAtual !== 'sigilosas';
-            $('lista-publicas').hidden = abaAtual !== 'publicas';
-        }));
         $('busca').addEventListener('input', desenhar);
 
-        /* ---------- DESENHO DAS LISTAS ---------- */
+        /* ---------- LISTAS DE INTENÇÕES ---------- */
         function desenhar() {
             const termo = norm($('busca').value.trim());
             const filtrar = (i) => !termo || norm(i.nome).includes(termo) || norm(i.pedido).includes(termo);
@@ -363,8 +419,8 @@
             $('qtd-sigilosas').textContent = sigilosas.length;
             $('qtd-publicas').textContent = publicas.length;
 
-            $('lista-sigilosas').innerHTML = gerarHTMLLista(sigilosas.filter(filtrar).sort(maisNovas), 'sigiloso', termo ? 'Nenhuma intenção sigilosa encontrada.' : 'Nenhuma intenção sigilosa no momento.');
-            $('lista-publicas').innerHTML  = gerarHTMLLista(publicas.filter(filtrar).sort(maisNovas), 'publico', termo ? 'Nenhuma intenção pública encontrada.' : 'Nenhuma intenção pública no momento.');
+            $('lista-sigilosas').innerHTML = gerarHTMLLista(sigilosas.filter(filtrar).sort(maisNovas), 'sigiloso', termo ? 'Nenhuma sigilosa encontrada.' : 'Nenhuma sigilosa no momento.');
+            $('lista-publicas').innerHTML  = gerarHTMLLista(publicas.filter(filtrar).sort(maisNovas), 'publico', termo ? 'Nenhuma pública encontrada.' : 'Nenhuma pública no momento.');
         }
 
         function gerarHTMLLista(lista, classe, vazio) {
@@ -383,10 +439,182 @@
                     </div>`;
             }).join('');
         }
-    </script>
-    <!-- ============================================================ -->
-    <!-- FIM DO JAVASCRIPT                                            -->
-    <!-- ============================================================ -->
 
+        /* ============================================================ */
+        /* REFLEXÕES — LÓGICA                                            */
+        /* ============================================================ */
+
+        // Extrai ID de vídeo do YouTube de vários formatos de URL
+        function extrairYouTubeId(url) {
+            if (!url) return null;
+            const padroes = [
+                /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/,
+                /^([a-zA-Z0-9_-]{11})$/
+            ];
+            for (const p of padroes) { const m = String(url).match(p); if (m) return m[1]; }
+            return null;
+        }
+
+        // Aba YouTube / Upload
+        document.querySelectorAll('.painel-form .tab').forEach(t => t.addEventListener('click', () => {
+            fonteReflexao = t.dataset.fonte;
+            document.querySelectorAll('.painel-form .tab').forEach(x => x.classList.toggle('ativo', x === t));
+            $('campo-youtube').hidden = (fonteReflexao !== 'youtube');
+            $('campo-r2').hidden = (fonteReflexao !== 'r2');
+        }));
+
+        // Contador
+        $('ref-texto').addEventListener('input', (e) => { $('ref-cont').textContent = e.target.value.length; });
+
+        // Preview do vídeo escolhido + extração de poster
+        let arquivoVideo = null;
+        let posterBlob = null;
+
+        $('ref-video-file').addEventListener('change', async (e) => {
+            const f = e.target.files[0];
+            if (!f) { arquivoVideo = null; posterBlob = null; return; }
+            if (f.size > 100 * 1024 * 1024) { toast('Vídeo muito grande (máx 100 MB).'); e.target.value = ''; return; }
+            arquivoVideo = f;
+            $('ref-video-nome').textContent = f.name;
+
+            const url = URL.createObjectURL(f);
+            const v = $('ref-video-preview');
+            v.src = url; v.hidden = false;
+            v.onloadedmetadata = async () => {
+                try {
+                    // Pula para um ponto do vídeo e extrai um frame como capa
+                    v.currentTime = Math.min(1, (v.duration || 1) / 2);
+                    await new Promise(r => v.onseeked = r);
+                    const canvas = document.createElement('canvas');
+                    canvas.width = v.videoWidth;
+                    canvas.height = v.videoHeight;
+                    canvas.getContext('2d').drawImage(v, 0, 0, canvas.width, canvas.height);
+                    canvas.toBlob((blob) => { posterBlob = blob; }, 'image/jpeg', 0.8);
+                } catch (_) { posterBlob = null; }
+            };
+        });
+
+        // Submit
+        $('form-reflexao').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const msg = $('msg-reflexao');
+            const btn = $('btn-publicar-ref');
+            msg.textContent = '';
+
+            const titulo = $('ref-titulo').value.trim();
+            const texto = $('ref-texto').value.trim();
+            const igreja = $('ref-igreja').value;
+            const autor = 'Padre Gedler';
+
+            if (!titulo) { msg.textContent = 'Informe o título.'; return; }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publicando...';
+
+            try {
+                let video_url = '', video_tipo = '', poster_url = '';
+
+                if (fonteReflexao === 'youtube') {
+                    const urlYt = $('ref-url-yt').value.trim();
+                    const id = extrairYouTubeId(urlYt);
+                    if (!id) throw new Error('Link do YouTube inválido.');
+                    video_url = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0`;
+                    poster_url = `https://img.youtube.com/vi/${id}/maxresdefault.jpg`;
+                    video_tipo = 'youtube';
+                } else {
+                    if (!arquivoVideo) throw new Error('Escolha um arquivo de vídeo.');
+                    // 1) Envia vídeo + poster
+                    const fd = new FormData();
+                    fd.append('video', arquivoVideo);
+                    if (posterBlob) fd.append('poster', posterBlob, 'poster.jpg');
+                    const r = await fetch(`${URL_API}/admin/homilias/upload`, {
+                        method: 'POST',
+                        headers: { 'Authorization': 'Basic ' + btoa('padre:' + senhaSalva) },
+                        body: fd
+                    });
+                    if (!r.ok) throw new Error('Erro no upload.');
+                    const dados = await r.json();
+                    video_url = dados.video_url;
+                    poster_url = dados.poster_url || '';
+                    video_tipo = 'r2';
+                }
+
+                // 2) Publica
+                const r2 = await fetch(`${URL_API}/admin/homilias`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Basic ' + btoa('padre:' + senhaSalva)
+                    },
+                    body: JSON.stringify({ titulo, texto, video_url, video_tipo, poster_url, igreja, autor })
+                });
+                if (r2.status === 401) throw new Error('401');
+                if (!r2.ok) throw new Error('Erro ao publicar.');
+
+                toast('Reflexão publicada!');
+                $('form-reflexao').reset();
+                $('ref-video-nome').textContent = '';
+                $('ref-video-preview').hidden = true;
+                $('ref-cont').textContent = '0';
+                arquivoVideo = null; posterBlob = null;
+                carregarReflexoesAdmin();
+            } catch (err) {
+                msg.textContent = err.message === '401' ? 'Sessão expirada. Saia e entre novamente.' : (err.message || 'Erro.');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-paper-plane"></i> Publicar Reflexão';
+            }
+        });
+
+        // Lista de reflexões publicadas
+        async function carregarReflexoesAdmin() {
+            const el = $('lista-reflexoes-admin');
+            try {
+                const r = await fetch(`${URL_API}/admin/homilias`, {
+                    headers: { 'Authorization': 'Basic ' + btoa('padre:' + senhaSalva) }
+                });
+                if (!r.ok) throw new Error();
+                const dados = await r.json();
+                if (!Array.isArray(dados) || !dados.length) {
+                    el.innerHTML = '<p class="vazio">Nenhuma reflexão publicada ainda.</p>';
+                    return;
+                }
+                el.innerHTML = dados.map(h => `
+                    <div class="card" style="border-left-color:${h.destaque ? 'var(--dourado)' : 'var(--roxo-2)'};margin-bottom:10px">
+                        <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+                            <div style="min-width:0;flex:1">
+                                <div style="font-size:.72rem;color:var(--dourado-escuro);font-weight:700;text-transform:uppercase">
+                                    ${h.igreja === 'todas' ? '🌐 Todas' : h.igreja === 'paroquia' ? '⛪ Paróquia' : '⛪ Carmo'} · ${h.video_tipo}
+                                </div>
+                                <div class="nome" style="margin-top:4px">${esc(h.titulo)}</div>
+                                <div style="font-size:.82rem;color:var(--cinza);margin-top:6px">${esc(h.criado_em || '')}</div>
+                            </div>
+                            <button type="button" class="btn-sair" style="background:#fbe4e1;color:var(--erro);border-color:#fbe4e1;flex:none" onclick="apagarReflexao(${h.id}, this)">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>`).join('');
+            } catch (e) {
+                el.innerHTML = '<p style="color:var(--erro);text-align:center">Erro ao carregar.</p>';
+            }
+        }
+
+        async function apagarReflexao(id, btn) {
+            if (!confirm('Apagar esta reflexão?')) return;
+            btn.disabled = true;
+            try {
+                const r = await fetch(`${URL_API}/admin/homilias/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': 'Basic ' + btoa('padre:' + senhaSalva) }
+                });
+                if (!r.ok) throw new Error();
+                toast('Reflexão apagada.');
+                carregarReflexoesAdmin();
+            } catch (e) {
+                toast('Erro ao apagar.');
+                btn.disabled = false;
+            }
+        }
+    </script>
 </body>
 </html>
