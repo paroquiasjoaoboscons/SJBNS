@@ -451,6 +451,8 @@
         const PREFIXO_IGREJA = 'igreja', TOTAL_IGREJA = 9;
         const VERSAO_IGREJA = Math.floor(Date.now() / 86400000);
 
+        // Valores iniciais (reserva). Se a Secretaria cadastrar os dados no painel
+        // (aba Dízimo), eles substituem estes automaticamente em iniciarDizimo().
         const DIZIMO = {
             imagem: 'qrcode-dizimo.png',
             favorecido: '',
@@ -730,13 +732,30 @@
         }));
 
         let dizimoTemQR = false;
-        function iniciarDizimo() {
+
+        // ===== INÍCIO: iniciarDizimo (lê os dados cadastrados no painel da Secretaria) =====
+        async function iniciarDizimo() {
+            try {
+                const d = await getJSON(`/dizimo?igreja=${IGREJA_PASCOM}`);
+                if (d && d.configurado) {
+                    if (d.favorecido) DIZIMO.favorecido = d.favorecido;
+                    DIZIMO.banco = d.banco || '';
+                    DIZIMO.tipoChave = d.tipo_chave || '';
+                    DIZIMO.chave = d.chave || '';
+                    DIZIMO.copiaECola = d.copia_cola || '';
+                    if (d.mensagem) DIZIMO.mensagem = d.mensagem;
+                    if (d.qr_url) DIZIMO.imagem = URL_API + d.qr_url;
+                }
+            } catch (_) { /* sem rede ou sem cadastro: mantém os dados fixos acima */ }
+
             const temTexto = !!(DIZIMO.chave || DIZIMO.copiaECola);
             const img = new Image();
             img.onload = () => { dizimoTemQR = true; $('card-dizimo').hidden = false; };
             img.onerror = () => { if (temTexto) $('card-dizimo').hidden = false; };
             img.src = `${DIZIMO.imagem}?v=${VERSAO_IGREJA}`;
         }
+        // ===== FIM: iniciarDizimo =====
+
         function copiarTexto(texto, btn) {
             const original = btn.innerHTML;
             const ok = () => { btn.innerHTML = '<i class="fas fa-check"></i> Copiado!'; setTimeout(() => { btn.innerHTML = original; }, 2000); };
@@ -783,6 +802,7 @@
             if (dizimoTemQR) {
                 const a = document.createElement('a'); a.className = 'btn-dz claro';
                 a.href = DIZIMO.imagem; a.download = 'qrcode-dizimo.png';
+                a.target = '_blank'; a.rel = 'noopener';
                 a.innerHTML = '<i class="fas fa-download"></i> Salvar QR Code';
                 botoes.appendChild(a);
             }
@@ -1071,7 +1091,7 @@
             carregarAniversariantes();
             carregarIntencoes();
             carregarPascom();
-            carregarReflexoes();   // ← NOVO
+            carregarReflexoes();
             montarIgreja();
         }
         carregarTudo();
