@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html class="staticrypt-html">
-    <head>
+        <head>
         <meta charset="utf-8" />
         <title>Administração Paroquial S.J.B.</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         
-        <!-- ===== CONFIGURAÇÃO PWA ===== -->
+        <!-- ===== COLE ESTE BLOCO AQUI ===== -->
         <link rel="manifest" href="manifest.json" />
         <meta name="theme-color" content="#4b2d6e" />
         <meta name="apple-mobile-web-app-capable" content="yes">
@@ -14,13 +14,16 @@
         <meta name="apple-mobile-web-app-title" content="Adm. Paroquial">
         <link rel="apple-touch-icon" href="icone-192.png" />
 
-        <!-- Registro do Service Worker (obrigatório para instalar) -->
         <script>
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('sw-admin.js', { scope: './' }).catch(()=>{});
             }
         </script>
-        <!-- ===== FIM CONFIGURAÇÃO PWA ===== -->
+        <!-- ===== FIM DO BLOCO ===== -->
+
+        <!-- do not cache this page -->
+        <meta http-equiv="cache-control" content="max-age=0" />
+        <!-- ... resto do head original ... -->
 
         <!-- do not cache this page -->
         <meta http-equiv="cache-control" content="max-age=0" />
