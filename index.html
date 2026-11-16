@@ -235,7 +235,7 @@
         .lb-seta { position: absolute; top: 50%; transform: translateY(-50%); z-index: 2; width: 44px; height: 44px; border-radius: 50%; border: none; background: rgba(255,255,255,.18); color: #fff; font-size: 1.5rem; cursor: pointer; }
         #lb-ant { left: 8px; } #lb-prox { right: 8px; }
 
-        /* ===== CARD REFLEXÃO DA SEMANA (NOVO) ===== */
+        /* ===== CARD REFLEXÃO DA SEMANA ===== */
         .reflexao-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
         .reflexao-grid.duas { grid-template-columns: 1fr 1fr; }
         .reflexao-card {
@@ -459,7 +459,7 @@
             <p>Hoje, a Paróquia acolhe famílias de diferentes bairros, promovendo celebrações, catequese, pastorais e ações sociais.</p>
         </div>
 
-        <div class="card">
+        <div class="card" id="card-igreja">
             <h2><i class="fas fa-images"></i> Conheça Nossa Paróquia</h2>
             <div id="grade-igreja" class="grade grade-igreja"></div>
         </div>
@@ -511,6 +511,8 @@
         const PREFIXO_PAROQUIA = 'paroquia', TOTAL_PAROQUIA = 9;
         const VERSAO_IGREJA = Math.floor(Date.now() / 86400000);
 
+        // Valores iniciais (reserva). Se a Secretaria cadastrar os dados no painel
+        // (aba Dízimo), eles substituem estes automaticamente em iniciarDizimo().
         const DIZIMO = {
             imagem: 'qrcode-dizimo-paroquia.png',
             favorecido: 'Paróquia São João Bosco',
@@ -683,13 +685,30 @@
 
         /* ========== DÍZIMO ========== */
         let dizimoTemQR = false;
-        function iniciarDizimo() {
+
+        // ===== INÍCIO: iniciarDizimo (lê os dados cadastrados no painel da Secretaria) =====
+        async function iniciarDizimo() {
+            try {
+                const d = await getJSON(`/dizimo?igreja=${IGREJA_PASCOM}`);
+                if (d && d.configurado) {
+                    if (d.favorecido) DIZIMO.favorecido = d.favorecido;
+                    DIZIMO.banco = d.banco || '';
+                    DIZIMO.tipoChave = d.tipo_chave || '';
+                    DIZIMO.chave = d.chave || '';
+                    DIZIMO.copiaECola = d.copia_cola || '';
+                    if (d.mensagem) DIZIMO.mensagem = d.mensagem;
+                    if (d.qr_url) DIZIMO.imagem = URL_API + d.qr_url;
+                }
+            } catch (_) { /* sem rede ou sem cadastro: mantém os dados fixos acima */ }
+
             const temTexto = !!(DIZIMO.chave || DIZIMO.copiaECola);
             const img = new Image();
             img.onload = () => { dizimoTemQR = true; $('card-dizimo').hidden = false; };
             img.onerror = () => { if (temTexto) $('card-dizimo').hidden = false; };
             img.src = `${DIZIMO.imagem}?v=${VERSAO_IGREJA}`;
         }
+        // ===== FIM: iniciarDizimo =====
+
         function copiarTexto(texto, btn) {
             const original = btn.innerHTML;
             const ok = () => { btn.innerHTML = '<i class="fas fa-check"></i> Copiado!'; setTimeout(() => { btn.innerHTML = original; }, 2000); };
@@ -736,6 +755,7 @@
             if (dizimoTemQR) {
                 const a = document.createElement('a'); a.className = 'btn-dz claro';
                 a.href = DIZIMO.imagem; a.download = 'qrcode-dizimo-paroquia.png';
+                a.target = '_blank'; a.rel = 'noopener';
                 a.innerHTML = '<i class="fas fa-download"></i> Salvar QR Code';
                 botoes.appendChild(a);
             }
@@ -781,7 +801,7 @@
         }
         function montarIgreja() {
             montarGaleria('grade-igreja', PREFIXO_PAROQUIA, TOTAL_PAROQUIA, 'Nossa Paróquia',
-                () => { $('card-igreja').hidden = true; });
+                () => { const c = $('card-igreja'); if (c) c.hidden = true; });
         }
         function montarGaleriaHome() {
             montarGaleria('grade-paroquia', PREFIXO_PAROQUIA, TOTAL_PAROQUIA, 'Nossa Paróquia',
@@ -1144,7 +1164,7 @@
             carregarAniversariantes();
             carregarIntencoes();
             carregarPascom();
-            carregarReflexoes();   // ← NOVO
+            carregarReflexoes();
             montarIgreja();
             montarGaleriaHome();
         }
