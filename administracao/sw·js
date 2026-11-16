@@ -1,6 +1,0 @@
-// Service worker mínimo do app "Gestão Paroquial".
-// Serve só para o navegador oferecer "Instalar"; não guarda nada em cache,
-// assim os painéis sempre abrem na versão mais nova.
-self.addEventListener('install', () => self.skipWaiting());
-self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));
-self.addEventListener('fetch', () => {});
