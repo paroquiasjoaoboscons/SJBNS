@@ -16,10 +16,6 @@
       }
     </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- ============================================================ -->
-    <!-- INÍCIO DO CSS                                                -->
-    <!-- ============================================================ -->
     <style>
         :root {
             --primaria: #4b2d6e;
@@ -49,7 +45,6 @@
         h1, h2, h3 { font-family: Georgia, 'Times New Roman', serif; }
         button { font-family: inherit; }
 
-        /* ---------- HERO ---------- */
         .hero {
             position: relative; min-height: 235px;
             background: url('igreja.jpg') center / cover no-repeat, var(--primaria);
@@ -57,10 +52,7 @@
             border-radius: 0 0 28px 28px; border-bottom: 3px solid var(--dourado);
             overflow: hidden; box-shadow: 0 6px 18px rgba(0,0,0,.2);
         }
-        .hero::before {
-            content: ''; position: absolute; inset: 0;
-            background: rgba(75, 45, 110, .72);
-        }
+        .hero::before { content: ''; position: absolute; inset: 0; background: rgba(75, 45, 110, .72); }
         @supports (color: color-mix(in srgb, red 10%, white)) {
             .hero::before {
                 background: linear-gradient(180deg,
@@ -83,7 +75,6 @@
         }
         .chip-cor i { width: 10px; height: 10px; border-radius: 50%; background: var(--dourado); border: 1px solid #fff; display: inline-block; }
 
-        /* ---------- ABAS ---------- */
         .aba-conteudo { display: none; padding: 18px 16px 0; max-width: 640px; margin: 0 auto; }
         .aba-conteudo.ativa { display: block; animation: surgir .28s ease; }
         @keyframes surgir { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
@@ -102,14 +93,9 @@
         .erro-msg { color: #b3392f; font-size: .9rem; }
         .vazio { color: var(--cinza); font-size: .92rem; text-align: center; padding: 14px 0; }
 
-        .skel {
-            height: 14px; border-radius: 7px; margin: 10px 0;
-            background: linear-gradient(90deg, #eee 25%, #f8f8f8 50%, #eee 75%); background-size: 200% 100%;
-            animation: brilho 1.2s infinite;
-        }
+        .skel { height: 14px; border-radius: 7px; margin: 10px 0; background: linear-gradient(90deg, #eee 25%, #f8f8f8 50%, #eee 75%); background-size: 200% 100%; animation: brilho 1.2s infinite; }
         @keyframes brilho { to { background-position: -200% 0; } }
 
-        /* ---------- Próxima missa + atalhos ---------- */
         .proxima {
             display: flex; align-items: center; gap: 14px; margin-bottom: 18px;
             background: linear-gradient(135deg, var(--primaria), var(--secundaria)); color: #fff;
@@ -125,50 +111,30 @@
             display: flex; flex-direction: column; align-items: center; gap: 7px; cursor: pointer;
             color: var(--primaria); font-size: .72rem; font-weight: 700; box-shadow: 0 2px 8px rgba(75,45,110,.07);
         }
-        .atalho i {
-            width: 40px; height: 40px; border-radius: 50%; background: var(--tinta); color: var(--primaria);
-            display: flex; align-items: center; justify-content: center; font-size: 1.05rem; border: 1.5px solid var(--dourado);
-        }
+        .atalho i { width: 40px; height: 40px; border-radius: 50%; background: var(--tinta); color: var(--primaria); display: flex; align-items: center; justify-content: center; font-size: 1.05rem; border: 1.5px solid var(--dourado); }
         .atalho:active { transform: scale(.96); }
 
-        /* ---------- Pároco ---------- */
         .card-padre { display: flex; align-items: center; gap: 15px; }
-        .foto-padre {
-            width: 72px; height: 72px; border-radius: 50%; object-fit: cover; flex-shrink: 0;
-            border: 3px solid var(--dourado); background: var(--tinta);
-        }
+        .foto-padre { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 3px solid var(--dourado); background: var(--tinta); }
         .foto-padre.fallback { display: flex; align-items: center; justify-content: center; color: var(--primaria); font-size: 1.5rem; }
         .info-padre h3 { font-size: 1.02rem; color: var(--primaria); line-height: 1.25; }
         .info-padre p { font-size: .85rem; color: var(--cinza); margin-top: 3px; }
 
-        /* ---------- Liturgia ---------- */
         .info { font-weight: 700; color: var(--cinza); font-size: .88rem; margin-bottom: 3px; }
         .leitura { margin-top: 16px; border-top: 1px solid var(--borda); padding-top: 12px; }
         .leitura .titulo { color: var(--secundaria); font-weight: 700; font-family: Georgia, serif; font-size: 1.02rem; margin-bottom: 3px; }
         .leitura .texto { font-size: .95rem; line-height: 1.6; white-space: pre-line; margin-top: 8px; }
         .liturgia-extra { display: none; }
-        .btn-expandir {
-            width: 100%; margin-top: 16px; padding: 13px; border-radius: 12px; cursor: pointer;
-            background: #fff; border: 1.5px solid var(--primaria); color: var(--primaria); font-weight: 700; font-size: .95rem;
-        }
+        .btn-expandir { width: 100%; margin-top: 16px; padding: 13px; border-radius: 12px; cursor: pointer; background: #fff; border: 1.5px solid var(--primaria); color: var(--primaria); font-weight: 700; font-size: .95rem; }
         .btn-expandir:active { background: var(--tinta); }
 
-        .btn-biblia {
-            display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none;
-            background: linear-gradient(135deg, var(--dourado), var(--dourado-escuro)); color: #fff;
-            padding: 14px; border-radius: 12px; font-weight: 700; box-shadow: 0 4px 12px rgba(160,127,44,.3);
-        }
+        .btn-biblia { display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; background: linear-gradient(135deg, var(--dourado), var(--dourado-escuro)); color: #fff; padding: 14px; border-radius: 12px; font-weight: 700; box-shadow: 0 4px 12px rgba(160,127,44,.3); }
 
-        /* ---------- Carrossel "Momentos da Semana" ---------- */
         .carrossel { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 6px; -webkit-overflow-scrolling: touch; }
         .carrossel::-webkit-scrollbar { display: none; }
-        .carrossel img {
-            flex: 0 0 80%; height: 210px; object-fit: cover; border-radius: 14px; scroll-snap-align: center;
-            cursor: pointer; background: var(--tinta); box-shadow: 0 2px 8px rgba(0,0,0,.14);
-        }
+        .carrossel img { flex: 0 0 80%; height: 210px; object-fit: cover; border-radius: 14px; scroll-snap-align: center; cursor: pointer; background: var(--tinta); box-shadow: 0 2px 8px rgba(0,0,0,.14); }
         .dica-mini { font-size: .78rem; color: var(--cinza); text-align: center; margin-top: 8px; }
 
-        /* ---------- Horários ---------- */
         .grupo-horario h3 { font-size: .85rem; text-transform: uppercase; letter-spacing: 1.2px; color: var(--dourado-escuro); margin: 18px 0 4px; }
         .grupo-horario:first-child h3 { margin-top: 0; }
         .horario-item { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px dashed var(--borda); }
@@ -177,7 +143,6 @@
         .horario-hora { text-align: right; font-weight: 700; font-size: .95rem; }
         .horario-hora small { display: block; font-weight: 400; color: var(--cinza); font-size: .78rem; }
 
-        /* ---------- Avisos / aniversariantes ---------- */
         .aviso-item { border-left: 4px solid var(--dourado); background: var(--tinta); border-radius: 0 12px 12px 0; padding: 12px 14px; margin-bottom: 12px; }
         .aviso-data { font-size: .72rem; color: var(--dourado-escuro); text-transform: uppercase; font-weight: 700; letter-spacing: .8px; }
         .aviso-item h3 { font-size: 1.02rem; margin: 4px 0; color: var(--primaria); }
@@ -189,26 +154,18 @@
         .aniversariante-item.hoje .aniversariante-data { background: linear-gradient(135deg, var(--dourado), var(--dourado-escuro)); }
         .badge-hoje { margin-left: auto; font-size: .72rem; font-weight: 700; color: var(--dourado-escuro); }
 
-        /* ---------- Intenções ---------- */
         .caixa-form { background: var(--tinta); border-radius: 14px; padding: 16px; margin-bottom: 22px; border: 1px solid var(--borda); }
         .caixa-form h3 { font-size: 1rem; color: var(--primaria); margin-bottom: 8px; }
         .form-group { margin-bottom: 12px; }
         .form-group label { display: block; font-size: .85rem; margin-bottom: 6px; font-weight: 700; color: var(--primaria); }
-        .form-group input[type="text"], .form-group textarea {
-            width: 100%; padding: 12px 14px; border: 1.5px solid var(--borda); border-radius: 12px;
-            font-family: inherit; font-size: 16px; background: #fff; outline: none;
-        }
+        .form-group input[type="text"], .form-group textarea { width: 100%; padding: 12px 14px; border: 1.5px solid var(--borda); border-radius: 12px; font-family: inherit; font-size: 16px; background: #fff; outline: none; }
         .form-group input:focus, .form-group textarea:focus { border-color: var(--secundaria); box-shadow: 0 0 0 3px rgba(109,74,150,.15); }
         .form-group textarea { height: 96px; resize: vertical; }
         .contador { text-align: right; font-size: .75rem; color: var(--cinza); margin-top: 3px; }
         .linha-check { display: flex; align-items: center; gap: 10px; margin: 8px 0 4px; }
         .linha-check input { width: 20px; height: 20px; accent-color: var(--primaria); flex: none; }
         .linha-check label { margin: 0; font-weight: 400; font-size: .85rem; color: var(--texto); }
-        .btn-enviar {
-            width: 100%; margin-top: 14px; padding: 14px; border: none; border-radius: 12px; cursor: pointer;
-            background: linear-gradient(135deg, var(--primaria), var(--secundaria)); color: #fff;
-            font-size: 1rem; font-weight: 700; box-shadow: 0 4px 12px rgba(75,45,110,.28);
-        }
+        .btn-enviar { width: 100%; margin-top: 14px; padding: 14px; border: none; border-radius: 12px; cursor: pointer; background: linear-gradient(135deg, var(--primaria), var(--secundaria)); color: #fff; font-size: 1rem; font-weight: 700; box-shadow: 0 4px 12px rgba(75,45,110,.28); }
         .btn-enviar:disabled { opacity: .6; }
         .msg-alerta { padding: 11px 14px; border-radius: 10px; margin-bottom: 14px; font-size: .9rem; font-weight: 700; display: none; }
         .msg-sucesso { background: #e1f3e8; color: #1f6b3f; }
@@ -217,51 +174,30 @@
         .intencao-nome { font-weight: 700; color: var(--primaria); font-size: .9rem; }
         .intencao-texto { margin: 6px 0; font-size: .95rem; line-height: 1.5; white-space: pre-line; }
         .intencao-footer { display: flex; justify-content: space-between; align-items: center; font-size: .78rem; color: var(--cinza); margin-top: 8px; }
-        .btn-rezar {
-            display: flex; align-items: center; gap: 6px; background: none; cursor: pointer;
-            border: 1.5px solid var(--secundaria); color: var(--secundaria); border-radius: 20px; padding: 6px 14px; font-size: .82rem; font-weight: 700;
-        }
+        .btn-rezar { display: flex; align-items: center; gap: 6px; background: none; cursor: pointer; border: 1.5px solid var(--secundaria); color: var(--secundaria); border-radius: 20px; padding: 6px 14px; font-size: .82rem; font-weight: 700; }
         .btn-rezar.feito { background: var(--primaria); border-color: var(--primaria); color: #fff; cursor: default; }
 
-        /* ---------- Pascom ---------- */
         .segmento { display: flex; background: var(--tinta); border-radius: 12px; padding: 4px; margin-bottom: 14px; position: relative; z-index: 10; }
         .seg { flex: 1; border: none; background: none; padding: 10px; border-radius: 9px; font-weight: 700; color: var(--primaria); font-size: .92rem; cursor: pointer; position: relative; z-index: 11; }
         .seg.ativo { background: #fff; box-shadow: 0 2px 6px rgba(75,45,110,.18); }
         .grade { display: grid; gap: 6px; }
         .grade-foto { grid-template-columns: repeat(3, 1fr); }
         .grade-video { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        .tile {
-            position: relative; overflow: hidden; cursor: pointer; border: none; padding: 0; border-radius: 10px;
-            aspect-ratio: 1; background: linear-gradient(90deg, #eee 25%, #f8f8f8 50%, #eee 75%); background-size: 200% 100%;
-            animation: brilho 1.2s infinite;
-        }
+        .tile { position: relative; overflow: hidden; cursor: pointer; border: none; padding: 0; border-radius: 10px; aspect-ratio: 1; background: linear-gradient(90deg, #eee 25%, #f8f8f8 50%, #eee 75%); background-size: 200% 100%; animation: brilho 1.2s infinite; }
         .tile.ok { animation: none; background: #000; }
         .grade-video .tile { aspect-ratio: 16 / 9; }
         .tile img, .tile video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
-        .tile .play {
-            position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; border-radius: 50%;
-            background: rgba(0,0,0,.55); color: #fff; display: flex; align-items: center; justify-content: center; padding-left: 3px; font-size: .9rem;
-        }
+        .tile .play { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,.55); color: #fff; display: flex; align-items: center; justify-content: center; padding-left: 3px; font-size: .9rem; }
         .tile .dur { position: absolute; right: 6px; bottom: 6px; background: rgba(0,0,0,.65); color: #fff; font-size: .7rem; font-weight: 700; padding: 2px 6px; border-radius: 6px; }
 
-        /* ---------- História ---------- */
         .historia p { font-size: .96rem; line-height: 1.7; margin-bottom: 15px; }
         .historia strong { color: var(--primaria); }
 
-        /* ---------- Dízimo e Ofertas (QR Code Pix) ---------- */
-        .btn-dizimo {
-            display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 14px;
-            border: none; border-radius: 12px; cursor: pointer; font-size: 1rem; font-weight: 700; color: #fff;
-            background: linear-gradient(135deg, var(--dourado), var(--dourado-escuro)); box-shadow: 0 4px 12px rgba(160,127,44,.3);
-        }
+        .btn-dizimo { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 14px; border: none; border-radius: 12px; cursor: pointer; font-size: 1rem; font-weight: 700; color: #fff; background: linear-gradient(135deg, var(--dourado), var(--dourado-escuro)); box-shadow: 0 4px 12px rgba(160,127,44,.3); }
         .btn-dizimo:active { transform: scale(.98); }
         .sheet { position: fixed; inset: 0; z-index: 1900; display: flex; align-items: flex-end; justify-content: center; }
         .sheet-fundo { position: absolute; inset: 0; background: rgba(15,8,25,.7); }
-        .sheet-painel {
-            position: relative; width: 100%; max-width: 520px; max-height: 92vh; overflow-y: auto;
-            background: var(--creme); border-radius: 24px 24px 0 0; border-top: 4px solid var(--dourado);
-            padding: 18px 18px calc(22px + var(--safe-b)); animation: subir .25s ease;
-        }
+        .sheet-painel { position: relative; width: 100%; max-width: 520px; max-height: 92vh; overflow-y: auto; background: var(--creme); border-radius: 24px 24px 0 0; border-top: 4px solid var(--dourado); padding: 18px 18px calc(22px + var(--safe-b)); animation: subir .25s ease; }
         @keyframes subir { from { transform: translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } }
         .sheet-topo { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
         .sheet-topo h3 { color: var(--primaria); font-size: 1.2rem; }
@@ -274,35 +210,20 @@
         .dados-pix dt { font-size: .72rem; text-transform: uppercase; letter-spacing: 1px; color: var(--dourado-escuro); font-weight: 700; }
         .dados-pix dd { font-size: .98rem; font-weight: 700; margin-top: 2px; word-break: break-all; }
         .dz-botoes { display: flex; flex-direction: column; gap: 10px; }
-        .btn-dz {
-            display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 13px; border-radius: 12px;
-            font-size: .95rem; font-weight: 700; cursor: pointer; text-decoration: none;
-            background: linear-gradient(135deg, var(--primaria), var(--secundaria)); color: #fff; border: none;
-        }
+        .btn-dz { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 13px; border-radius: 12px; font-size: .95rem; font-weight: 700; cursor: pointer; text-decoration: none; background: linear-gradient(135deg, var(--primaria), var(--secundaria)); color: #fff; border: none; }
         .btn-dz.claro { background: #fff; color: var(--primaria); border: 1.5px solid var(--primaria); }
         .aviso-pix { font-size: .78rem; color: var(--cinza); text-align: center; margin-top: 14px; line-height: 1.5; }
 
-        /* ---------- Galeria fixa da igreja ---------- */
         .grade-igreja { grid-template-columns: repeat(2, 1fr); gap: 8px; }
         .grade-igreja .tile { aspect-ratio: 4 / 3; border-radius: 12px; }
         .grade-igreja .tile:first-child { grid-column: 1 / -1; aspect-ratio: 16 / 10; }
 
-        /* ---------- Menu inferior ---------- */
-        .menu-inferior {
-            position: fixed; left: 0; right: 0; bottom: 0; z-index: 1000;
-            height: calc(var(--nav-h) + var(--safe-b)); padding-bottom: var(--safe-b);
-            background: #fff; border-top: 1px solid var(--borda); box-shadow: 0 -4px 16px rgba(75,45,110,.1); display: flex;
-        }
-        .menu-item {
-            flex: 1; min-width: 0; background: none; border: none; cursor: pointer; position: relative;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
-            color: var(--cinza); font-size: .66rem; font-weight: 700;
-        }
+        .menu-inferior { position: fixed; left: 0; right: 0; bottom: 0; z-index: 1000; height: calc(var(--nav-h) + var(--safe-b)); padding-bottom: var(--safe-b); background: #fff; border-top: 1px solid var(--borda); box-shadow: 0 -4px 16px rgba(75,45,110,.1); display: flex; }
+        .menu-item { flex: 1; min-width: 0; background: none; border: none; cursor: pointer; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: var(--cinza); font-size: .66rem; font-weight: 700; }
         .menu-item i { font-size: 1.25rem; }
         .menu-item.ativo { color: var(--primaria); }
         .menu-item.ativo::before { content: ''; position: absolute; top: 0; left: 26%; right: 26%; height: 3px; background: var(--dourado); border-radius: 0 0 4px 4px; }
 
-        /* ---------- Lightbox (fotos e vídeos) ---------- */
         .lightbox { position: fixed; inset: 0; z-index: 2000; background: rgba(15,8,25,.97); display: none; flex-direction: column; }
         .lightbox.ativo { display: flex; }
         .lb-topo { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: calc(12px + env(safe-area-inset-top, 0px)) 14px 10px; color: #fff; }
@@ -312,13 +233,34 @@
         .lb-btn { background: rgba(255,255,255,.15); color: #fff; border: none; width: 42px; height: 42px; border-radius: 50%; font-size: 1rem; cursor: pointer; flex: none; }
         .lb-acoes { display: flex; gap: 8px; }
         .lb-palco { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; position: relative; padding: 0 6px calc(14px + var(--safe-b)); }
-        .lb-palco img, .lb-palco video { max-width: 100%; max-height: 100%; border-radius: 8px; object-fit: contain; }
+        .lb-palco img, .lb-palco video, .lb-palco iframe { max-width: 100%; max-height: 100%; border-radius: 8px; object-fit: contain; }
+        .lb-palco iframe { width: 100%; aspect-ratio: 16/9; border: none; }
         .lb-seta { position: absolute; top: 50%; transform: translateY(-50%); z-index: 2; width: 44px; height: 44px; border-radius: 50%; border: none; background: rgba(255,255,255,.18); color: #fff; font-size: 1.5rem; cursor: pointer; }
         #lb-ant { left: 8px; } #lb-prox { right: 8px; }
+
+        /* ===== CARD REFLEXÃO DA SEMANA ===== */
+        .reflexao-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        .reflexao-grid.duas { grid-template-columns: 1fr 1fr; }
+        .reflexao-card {
+            position: relative; overflow: hidden; border-radius: 14px; cursor: pointer;
+            background: #000; aspect-ratio: 16/9; border: 2px solid var(--dourado);
+            box-shadow: 0 3px 10px rgba(0,0,0,.15);
+        }
+        .reflexao-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .reflexao-card .play-overlay {
+            position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+            width: 54px; height: 54px; border-radius: 50%;
+            background: rgba(0,0,0,.65); color: #fff; display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; padding-left: 4px; pointer-events: none;
+            border: 2px solid rgba(255,255,255,.5);
+        }
+        .reflexao-card .titulo-overlay {
+            position: absolute; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(0deg, rgba(0,0,0,.85) 0%, transparent 100%);
+            color: #fff; padding: 24px 10px 8px; font-size: .82rem; font-weight: 700;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
     </style>
-    <!-- ============================================================ -->
-    <!-- FIM DO CSS                                                   -->
-    <!-- ============================================================ -->
 </head>
 <body>
 
@@ -359,6 +301,14 @@
             </div>
         </div>
 
+        <!-- ===== CARD REFLEXÃO DA SEMANA (logo abaixo da Liturgia) ===== -->
+        <div class="card" id="card-reflexao" hidden>
+            <h2><i class="fas fa-feather-alt"></i> Reflexão do Padre</h2>
+            <p class="sub-texto">Uma palavra do nosso pároco para meditar durante a semana.</p>
+            <div id="reflexao-lista" class="reflexao-grid"></div>
+        </div>
+        <!-- ===== FIM CARD REFLEXÃO ===== -->
+
         <div class="card" id="card-dizimo" hidden>
             <h2><i class="fas fa-hand-holding-heart"></i> Dízimo e Ofertas</h2>
             <p class="sub-texto">Contribua com a nossa comunidade pelo Pix: abra o QR Code e pague no aplicativo do seu banco.</p>
@@ -372,7 +322,6 @@
             <button type="button" class="btn-expandir" data-aba="pascom">Ver todas as fotos e vídeos</button>
         </div>
 
-        <!-- 👇 AQUI ESTÁ A GALERIA DA IGREJA NA PÁGINA INICIAL -->
         <div class="card" id="card-igreja">
             <h2><i class="fas fa-images"></i> Conheça Nossa Igreja</h2>
             <p class="sub-texto">Toque em uma foto para ampliar e deslize para ver as próximas.</p>
@@ -438,12 +387,10 @@
         <div class="card">
             <h2><i class="fas fa-camera"></i> Pascom</h2>
             <p class="sub-texto">Momentos especiais registrados pela Pastoral da Comunicação. Toque para ampliar ou assistir.</p>
-
             <div class="segmento">
                 <button type="button" class="seg ativo" data-seg="foto">Fotos</button>
                 <button type="button" class="seg" data-seg="video">Vídeos</button>
             </div>
-
             <div id="grade-foto" class="grade grade-foto"></div>
             <div id="grade-video" class="grade grade-video" hidden></div>
             <p id="pascom-vazio" class="vazio" hidden>Ainda não há fotos publicadas.</p>
@@ -453,15 +400,9 @@
     <div id="aba-institucional" class="aba-conteudo">
         <div class="card historia">
             <h2><i class="fas fa-church"></i> Nossa História</h2>
-            <p>
-              A Capela de Nossa Senhora do Carmo, no distrito de Boa Vista de Minas, é um marco de fé que atravessa gerações. Segundo a Prefeitura de Nova Serrana, a capela foi <strong>construída pelas mãos de pessoas escravizadas, há mais de 100 anos, a pedido de um fazendeiro da região</strong>. O templo é reconhecido como patrimônio cultural do município.
-            </p>
-            <p>
-               <strong>O Altar-Mor:</strong> Um dos maiores tesouros da capela é seu altar esculpido em madeira. A tradição local, preservada pela comunidade e registrada pela Prefeitura, associa a obra ao mestre <strong>Aleijadinho</strong> ou à sua escola. O estilo rococó, com detalhes em branco e dourado, encanta fiéis e visitantes.
-            </p>
-            <p>
-               <strong>A Congada:</strong> A fé da comunidade caminha lado a lado com a tradicional <strong>Congada de Boa Vista</strong>. Com origem no período da escravidão, o grupo mantém viva a dança, a música e a devoção, sendo um patrimônio imaterial da região.
-            </p>
+            <p>A Capela de Nossa Senhora do Carmo, no distrito de Boa Vista de Minas, é um marco de fé que atravessa gerações. Segundo a Prefeitura de Nova Serrana, a capela foi <strong>construída pelas mãos de pessoas escravizadas, há mais de 100 anos, a pedido de um fazendeiro da região</strong>. O templo é reconhecido como patrimônio cultural do município.</p>
+            <p><strong>O Altar-Mor:</strong> Um dos maiores tesouros da capela é seu altar esculpido em madeira. A tradição local, preservada pela comunidade e registrada pela Prefeitura, associa a obra ao mestre <strong>Aleijadinho</strong> ou à sua escola. O estilo rococó, com detalhes em branco e dourado, encanta fiéis e visitantes.</p>
+            <p><strong>A Congada:</strong> A fé da comunidade caminha lado a lado com a tradicional <strong>Congada de Boa Vista</strong>. Com origem no período da escravidão, o grupo mantém viva a dança, a música e a devoção, sendo um patrimônio imaterial da região.</p>
         </div>
     </div>
 
@@ -505,8 +446,6 @@
 
     <script>
         const URL_API = 'https://api-paroquia.paroquiasjoaoboscons.workers.dev';
-
-        // Pascom desta igreja (a Paróquia usa "paroquia")
         const IGREJA_PASCOM = 'carmo';
 
         const PREFIXO_IGREJA = 'igreja', TOTAL_IGREJA = 9;
@@ -563,9 +502,14 @@
         function renderLB() {
             const it = lbLista[lbIdx];
             const palco = $('lb-palco');
-            palco.querySelectorAll('img, video').forEach(e => { if (e.tagName === 'VIDEO') e.pause(); e.remove(); });
+            palco.querySelectorAll('img, video, iframe').forEach(e => { if (e.tagName === 'VIDEO') e.pause(); e.remove(); });
             let el;
             if (it.tipo === 'foto') { el = new Image(); el.src = it.url; el.alt = it.leg; }
+            else if (it.tipo === 'youtube') {
+                el = document.createElement('iframe');
+                el.src = it.url; el.allow = 'autoplay; encrypted-media; picture-in-picture';
+                el.allowFullscreen = true;
+            }
             else {
                 el = document.createElement('video');
                 el.src = it.url; el.controls = true; el.autoplay = true; el.preload = 'metadata';
@@ -588,7 +532,7 @@
         function limparLB() {
             if (!$('lightbox').classList.contains('ativo')) return;
             $('lb-palco').querySelectorAll('video').forEach(v => v.pause());
-            $('lb-palco').querySelectorAll('img, video').forEach(e => e.remove());
+            $('lb-palco').querySelectorAll('img, video, iframe').forEach(e => e.remove());
             $('lightbox').classList.remove('ativo');
             document.body.classList.remove('sem-scroll');
         }
@@ -625,10 +569,43 @@
             if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) navegarLB(dx < 0 ? 1 : -1);
         }, { passive: true });
 
+        /* ===== REFLEXÕES DO PADRE ===== */
+        let reflexoesCache = [];
+        async function carregarReflexoes() {
+            const container = $('reflexao-lista');
+            const card = $('card-reflexao');
+            if (!container || !card) return;
+            try {
+                const dados = await getJSON(`/homilias?igreja=${IGREJA_PASCOM}`);
+                reflexoesCache = Array.isArray(dados) ? dados : [];
+                if (!reflexoesCache.length) { card.hidden = true; return; }
+                container.className = 'reflexao-grid' + (reflexoesCache.length > 1 ? ' duas' : '');
+                container.innerHTML = reflexoesCache.map((h, i) => {
+                    const poster = h.poster_url
+                        ? (/^https?:\/\//i.test(h.poster_url) ? h.poster_url : URL_API + h.poster_url)
+                        : '';
+                    return `
+                        <div class="reflexao-card" onclick="abrirReflexao(${i})">
+                            ${poster ? `<img src="${esc(poster)}" alt="${esc(h.titulo)}" loading="lazy">` : '<div style="width:100%;height:100%;background:linear-gradient(135deg,var(--primaria),var(--secundaria))"></div>'}
+                            <div class="play-overlay"><i class="fas fa-play"></i></div>
+                            <div class="titulo-overlay">${esc(h.titulo)}</div>
+                        </div>`;
+                }).join('');
+                card.hidden = false;
+            } catch (e) { card.hidden = true; }
+        }
+        function abrirReflexao(i) {
+            const h = reflexoesCache[i]; if (!h) return;
+            const tipo = h.video_tipo === 'youtube' ? 'youtube' : 'video';
+            const url = h.video_tipo === 'youtube'
+                ? h.video_url
+                : (String(h.video_url).startsWith('http') ? h.video_url : URL_API + h.video_url);
+            abrirLB([{ tipo, url, leg: h.titulo }], 0);
+        }
+
         const LIMITE_FOTOS = 20, LIMITE_VIDEOS = 5;
         let pascomFotos = [], pascomVideos = [];
         let pascomEm = 0, pascomPronto = false, pascomErro = false;
-
         const urlMidia = (u) => /^https?:\/\//i.test(u) ? u : URL_API + (String(u).startsWith('/') ? '' : '/') + u;
         const urlEhVideo = (u) => /\.(mp4|webm|mov|m4v)(\?|#|$)/i.test(u || '');
 
@@ -636,7 +613,6 @@
             pascomEm = Date.now();
             if (!pascomPronto) atualizarVazioPascom();
             try {
-                // Só as fotos e vídeos enviados para a COMUNIDADE DO CARMO
                 const r = await fetch(`${URL_API}/pascom?igreja=${IGREJA_PASCOM}`, { cache: 'no-cache' });
                 if (!r.ok) throw new Error('http ' + r.status);
                 const dados = await r.json();
@@ -648,9 +624,7 @@
                 pascomFotos = itens.filter(i => i.tipo === 'foto').slice(0, LIMITE_FOTOS);
                 pascomVideos = itens.filter(i => i.tipo === 'video').slice(0, LIMITE_VIDEOS);
                 pascomErro = false;
-            } catch (e) {
-                pascomErro = true;
-            }
+            } catch (e) { pascomErro = true; }
             pascomPronto = true;
             desenharPascom();
         }
@@ -742,7 +716,6 @@
                 }
             });
             $('card-momentos').hidden = recentes.length === 0;
-
             document.querySelector('.seg[data-seg="foto"]').textContent = pascomFotos.length ? `Fotos (${pascomFotos.length})` : 'Fotos';
             document.querySelector('.seg[data-seg="video"]').textContent = pascomVideos.length ? `Vídeos (${pascomVideos.length})` : 'Vídeos';
             atualizarVazioPascom();
@@ -757,7 +730,6 @@
         }));
 
         let dizimoTemQR = false;
-
         function iniciarDizimo() {
             const temTexto = !!(DIZIMO.chave || DIZIMO.copiaECola);
             const img = new Image();
@@ -765,7 +737,6 @@
             img.onerror = () => { if (temTexto) $('card-dizimo').hidden = false; };
             img.src = `${DIZIMO.imagem}?v=${VERSAO_IGREJA}`;
         }
-
         function copiarTexto(texto, btn) {
             const original = btn.innerHTML;
             const ok = () => { btn.innerHTML = '<i class="fas fa-check"></i> Copiado!'; setTimeout(() => { btn.innerHTML = original; }, 2000); };
@@ -780,15 +751,12 @@
             try { document.execCommand('copy'); ok(); } catch (_) {}
             t.remove();
         }
-
         function abrirDizimo() {
             $('dz-msg').textContent = DIZIMO.mensagem || '';
             $('dz-msg').hidden = !DIZIMO.mensagem;
-
             const qr = $('dz-qr');
             $('dz-qrbox').hidden = !dizimoTemQR;
             if (dizimoTemQR) qr.src = `${DIZIMO.imagem}?v=${VERSAO_IGREJA}`;
-
             const dados = $('dz-dados'); dados.innerHTML = '';
             const linha = (rotulo, valor) => {
                 if (!valor) return;
@@ -801,7 +769,6 @@
             linha('Banco', DIZIMO.banco);
             linha(DIZIMO.tipoChave ? `Chave Pix (${DIZIMO.tipoChave})` : 'Chave Pix', DIZIMO.chave);
             dados.hidden = !dados.children.length;
-
             const botoes = $('dz-botoes'); botoes.innerHTML = '';
             if (DIZIMO.chave) {
                 const b = document.createElement('button'); b.type = 'button'; b.className = 'btn-dz';
@@ -819,7 +786,6 @@
                 a.innerHTML = '<i class="fas fa-download"></i> Salvar QR Code';
                 botoes.appendChild(a);
             }
-
             $('dizimo-sheet').hidden = false;
             document.body.classList.add('sem-scroll');
             history.pushState({ dz: 1 }, '');
@@ -892,18 +858,15 @@
                 const resposta = await fetch('https://liturgia.up.railway.app/v2/');
                 if (!resposta.ok) throw new Error('API fora do ar');
                 const dados = await resposta.json();
-
                 if (dados.cor) {
                     aplicarCorLiturgica(dados.cor);
                     $('chip-cor-txt').textContent = 'Cor litúrgica: ' + dados.cor;
                     $('chip-cor').hidden = false;
                 }
-
                 let html = '';
                 if (dados.data) html += `<p class="info">Data: ${esc(dados.data)}</p>`;
                 if (dados.liturgia) html += `<p class="info">${esc(dados.liturgia)}</p>`;
                 if (dados.cor) html += `<p class="info">Cor Litúrgica: ${esc(dados.cor)}</p>`;
-
                 const l = dados.leituras;
                 if (l) {
                     html += bloco('Primeira Leitura', l.primeiraLeitura);
@@ -975,12 +938,10 @@
             try {
                 const dados = await getJSON('/horarios');
                 if (!dados.length) { container.innerHTML = '<p class="vazio">Nenhum horário cadastrado.</p>'; $('proxima-missa').hidden = true; return; }
-
                 const prioridade = (t) => { const n = norm(t); return n.includes('missa') ? 0 : n.includes('confiss') ? 1 : n.includes('adora') ? 2 : n.includes('terco') ? 3 : 4; };
                 const grupos = {};
                 dados.forEach(i => { (grupos[i.tipo] = grupos[i.tipo] || []).push(i); });
                 const tipos = Object.keys(grupos).sort((a, b) => prioridade(a) - prioridade(b) || a.localeCompare(b));
-
                 container.innerHTML = tipos.map(tp => {
                     const itens = grupos[tp].sort((a, b) => ordemDia(a.dia) - ordemDia(b.dia) || (minutosDoDia(a.horario) ?? 0) - (minutosDoDia(b.horario) ?? 0));
                     return `<div class="grupo-horario"><h3>${esc(tp)}</h3>${itens.map(i => `
@@ -989,7 +950,6 @@
                             <span class="horario-hora">${esc(i.horario)}<small>${esc(i.local)}</small></span>
                         </div>`).join('')}</div>`;
                 }).join('');
-
                 mostrarProximaMissa(dados);
             } catch (erro) { container.innerHTML = erroHTML('carregarHorarios'); }
         }
@@ -1111,7 +1071,8 @@
             carregarAniversariantes();
             carregarIntencoes();
             carregarPascom();
-            montarIgreja(); // 👈 Inicia a galeria da igreja na tela inicial
+            carregarReflexoes();   // ← NOVO
+            montarIgreja();
         }
         carregarTudo();
         iniciarDizimo();
