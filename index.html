@@ -911,7 +911,7 @@
         async function carregarHorarios() {
             const container = $('horarios-conteudo');
             try {
-                const dados = await getJSON('/horarios');
+                const dados = await getJSON('/horarios?igreja=' + IGREJA_PASCOM);
                 if (!dados.length) { container.innerHTML = '<p class="vazio">Nenhum horário cadastrado.</p>'; $('proxima-missa').hidden = true; return; }
                 const prioridade = (t) => { const n = norm(t); return n.includes('missa') ? 0 : n.includes('confiss') ? 1 : n.includes('adora') ? 2 : n.includes('terco') ? 3 : 4; };
                 const grupos = {};
@@ -934,7 +934,7 @@
         async function carregarAvisos() {
             const container = $('avisos-conteudo');
             try {
-                avisosCache = await getJSON('/avisos');
+                avisosCache = await getJSON('/avisos?igreja=' + IGREJA_PASCOM);
                 if (!avisosCache.length) { container.innerHTML = '<p class="vazio">Nenhum aviso no momento.</p>'; return; }
                 container.innerHTML = avisosCache.map((a, i) => `
                     <div class="aviso-item">
@@ -965,7 +965,7 @@
         async function carregarAniversariantes() {
             const container = $('aniversariantes-conteudo');
             try {
-                const dados = await getJSON('/aniversariantes');
+                const dados = await getJSON('/aniversariantes?igreja=' + IGREJA_PASCOM);
                 if (!dados.length) { container.innerHTML = '<p class="vazio">Nenhum aniversariante cadastrado.</p>'; return; }
                 const lista = dados.map(i => ({ ...i, falta: diasAteAniversario(i.dia, i.mes) })).sort((a, b) => a.falta - b.falta);
                 container.innerHTML = lista.map(i => `
