@@ -1,4 +1,5 @@
 {
+  "id": "./links.html",
   "name": "Administração Paroquial S.J.B.",
   "short_name": "Adm. Paroquial",
   "description": "Painel de gestão da Paróquia São João Bosco",
@@ -9,17 +10,9 @@
   "background_color": "#4b2d6e",
   "theme_color": "#4b2d6e",
   "icons": [
-    {
-      "src": "icone-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "icone-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
+    { "src": "icone-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icone-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icone-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icone-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }
