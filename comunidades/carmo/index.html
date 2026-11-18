@@ -195,6 +195,7 @@
 
         .btn-dizimo { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 14px; border: none; border-radius: 12px; cursor: pointer; font-size: 1rem; font-weight: 700; color: #fff; background: linear-gradient(135deg, var(--dourado), var(--dourado-escuro)); box-shadow: 0 4px 12px rgba(160,127,44,.3); }
         .btn-dizimo:active { transform: scale(.98); }
+        .btn-dizimo:disabled { opacity: .6; cursor: default; }
         .sheet { position: fixed; inset: 0; z-index: 1900; display: flex; align-items: flex-end; justify-content: center; }
         .sheet-fundo { position: absolute; inset: 0; background: rgba(15,8,25,.7); }
         .sheet-painel { position: relative; width: 100%; max-width: 520px; max-height: 92vh; overflow-y: auto; background: var(--creme); border-radius: 24px 24px 0 0; border-top: 4px solid var(--dourado); padding: 18px 18px calc(22px + var(--safe-b)); animation: subir .25s ease; }
@@ -309,7 +310,7 @@
         </div>
         <!-- ===== FIM CARD REFLEXÃO ===== -->
 
-        <div class="card" id="card-dizimo" hidden>
+        <div class="card" id="card-dizimo">
             <h2><i class="fas fa-hand-holding-heart"></i> Dízimo e Ofertas</h2>
             <p class="sub-texto">Contribua com a nossa comunidade pelo Pix: abra o QR Code e pague no aplicativo do seu banco.</p>
             <button type="button" class="btn-dizimo" id="btn-dizimo"><i class="fas fa-qrcode"></i> Ver QR Code</button>
@@ -750,8 +751,15 @@
 
             const temTexto = !!(DIZIMO.chave || DIZIMO.copiaECola);
             const img = new Image();
-            img.onload = () => { dizimoTemQR = true; $('card-dizimo').hidden = false; };
-            img.onerror = () => { if (temTexto) $('card-dizimo').hidden = false; };
+            // O card agora é sempre visível; sem QR/chave cadastrados mostra "em breve"
+            const emBreve = () => {
+                if (temTexto || dizimoTemQR) return;
+                const b = $('btn-dizimo');
+                b.disabled = true;
+                b.innerHTML = '<i class="fas fa-clock"></i> Em breve';
+            };
+            img.onload = () => { dizimoTemQR = true; };
+            img.onerror = emBreve;
             img.src = `${DIZIMO.imagem}?v=${VERSAO_IGREJA}`;
         }
         // ===== FIM: iniciarDizimo =====
