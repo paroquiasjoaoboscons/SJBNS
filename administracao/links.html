@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Administração Paroquial S.J.B.</title>
 
-    <!-- PWA (página SEM criptografia: o navegador enxerga manifest + service worker) -->
     <link rel="manifest" href="manifest.json" />
     <meta name="theme-color" content="#4b2d6e" />
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -19,9 +18,12 @@
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw-admin.js', { scope: './' }).catch(()=>{});
         }
-        // Captura o evento de instalação o mais cedo possível
         window.__pwa = null;
-        window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); window.__pwa = e; window.dispatchEvent(new Event('pwa-pronto')); });
+        window.addEventListener('beforeinstallprompt', e => {
+            e.preventDefault();
+            window.__pwa = e;
+            window.dispatchEvent(new Event('pwa-pronto'));
+        });
     </script>
 
     <style>
@@ -51,11 +53,47 @@
         .btn:disabled { opacity: .6; }
         .erro { color: #b3261e; font-size: .85rem; margin-top: 8px; min-height: 1.1em; }
 
-        .instalar { background: #fff; border: 1px solid var(--dourado); border-radius: 14px; padding: 14px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
-        .instalar .txt { flex: 1; font-size: .88rem; line-height: 1.3; }
-        .instalar .txt b { color: var(--roxo); display: block; font-size: .95rem; }
-        .instalar button { border: 0; border-radius: 8px; padding: 9px 14px; font-weight: 600; cursor: pointer; background: var(--dourado); color: #2e2339; }
-        .instalar .x { background: transparent; color: #7a6f85; padding: 6px; font-size: 1.1rem; }
+        /* ===== INÍCIO: CSS NOTIFICAÇÃO/MODAL DE INSTALAÇÃO ===== */
+        .modal-pwa {
+            position: fixed; inset: 0; z-index: 9999;
+            background: rgba(20, 10, 35, 0.72);
+            backdrop-filter: blur(3px);
+            display: flex; align-items: center; justify-content: center;
+            padding: 18px;
+            animation: fadeModal .25s ease;
+        }
+        @keyframes fadeModal { from { opacity: 0; } to { opacity: 1; } }
+        .modal-pwa-box {
+            background: #fff; width: 100%; max-width: 390px;
+            border-radius: 22px; padding: 24px 20px 20px;
+            text-align: center;
+            border-top: 5px solid var(--dourado);
+            box-shadow: 0 14px 36px rgba(0,0,0,.35);
+            animation: sobeModal .28s ease;
+        }
+        @keyframes sobeModal { from { transform: translateY(20px) scale(.96); opacity: 0; } to { transform: none; opacity: 1; } }
+        .modal-pwa-icone {
+            width: 74px; height: 74px; border-radius: 18px;
+            margin: 0 auto 14px; display: block;
+            border: 2px solid var(--dourado);
+            box-shadow: 0 4px 12px rgba(75,45,110,.2);
+        }
+        .modal-pwa-box h3 { color: var(--roxo); font-size: 1.22rem; margin-bottom: 8px; }
+        .modal-pwa-box p { color: #5f556a; font-size: .92rem; line-height: 1.45; margin-bottom: 18px; }
+        .btn-instalar-destaque {
+            width: 100%; padding: 14px; border: 0; border-radius: 12px;
+            background: linear-gradient(135deg, var(--roxo), var(--roxo-2));
+            color: #fff; font-size: 1rem; font-weight: 700;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            cursor: pointer; box-shadow: 0 4px 14px rgba(75,45,110,.35);
+            margin-bottom: 10px;
+        }
+        .btn-instalar-destaque i { color: var(--dourado); font-size: 1.1rem; }
+        .btn-depois {
+            background: none; border: 0; color: #7a6f85;
+            font-size: .88rem; padding: 8px 14px; cursor: pointer; text-decoration: underline;
+        }
+        /* ===== FIM: CSS NOTIFICAÇÃO/MODAL DE INSTALAÇÃO ===== */
 
         .sair { text-align: center; margin-top: 6px; }
         .sair button { background: none; border: 0; color: #7a6f85; font-size: .85rem; text-decoration: underline; cursor: pointer; }
@@ -69,16 +107,23 @@
         <p>Paróquia São João Bosco</p>
     </header>
 
+    <!-- ===== INÍCIO: HTML NOTIFICAÇÃO AUTOMÁTICA DE INSTALAÇÃO ===== -->
+    <div class="modal-pwa" id="modal-instalar" hidden>
+        <div class="modal-pwa-box" role="dialog" aria-modal="true" aria-labelledby="titulo-pwa">
+            <img src="icone-admin-192.png" alt="Ícone Administração" class="modal-pwa-icone" onerror="this.style.display='none'">
+            <h3 id="titulo-pwa">Instalar App Administração</h3>
+            <p id="instalar-txt">Instale o aplicativo da Administração na tela inicial do seu celular para acesso rápido e direto.</p>
+            <button id="btn-instalar" class="btn-instalar-destaque" type="button">
+                <i class="fas fa-download"></i> Instalar Aplicativo Agora
+            </button>
+            <button id="fechar-instalar" class="btn-depois" type="button">Agora não</button>
+        </div>
+    </div>
+    <!-- ===== FIM: HTML NOTIFICAÇÃO AUTOMÁTICA DE INSTALAÇÃO ===== -->
+
     <main class="container">
 
-        <!-- Instalador do app (aparece já na tela de senha) -->
-        <div class="instalar" id="instalar" hidden>
-            <div class="txt"><b>Instalar o app</b><span id="instalar-txt">Tenha a Administração na tela inicial do celular.</span></div>
-            <button id="btn-instalar" type="button">Instalar</button>
-            <button class="x" id="fechar-instalar" type="button" aria-label="Fechar">&times;</button>
-        </div>
-
-        <!-- Tela de senha (a senha é validada pelo Worker no Cloudflare) -->
+        <!-- Tela de senha -->
         <form class="card login" id="login" autocomplete="off" hidden>
             <div style="width:100%">
                 <h2>Acesso restrito</h2>
@@ -101,21 +146,15 @@
                 <div><h3>Comunidades</h3><p>Abrir o app das comunidades</p></div>
             </a>
 
-            
-<a href="admin.html" class="card">
+            <a href="admin.html" class="card">
+                <div class="ico"><i class="fas fa-user-tie"></i></div>
+                <div><h3>Painel do Padre</h3><p>Acessar intenções e reflexões</p></div>
+            </a>
 
-    <div class="ico"><i class="fas fa-user-tie"></i></div>
-    <div><h3>Painel do Padre</h3><p>Acessar intenções e reflexões</p></div>
-
-</a>
-
-<a href="secretaria.html" class="card">
-
-    <div class="ico"><i class="fas fa-clipboard-list"></i></div>
-    <div><h3>Secretaria</h3><p>Gerenciar avisos, Pascom e dízimo</p></div>
-
-</a>
-
+            <a href="secretaria.html" class="card">
+                <div class="ico"><i class="fas fa-clipboard-list"></i></div>
+                <div><h3>Secretaria</h3><p>Gerenciar avisos, Pascom e dízimo</p></div>
+            </a>
 
             <div class="sair"><button type="button" id="sair">Sair deste aparelho</button></div>
         </section>
@@ -125,11 +164,10 @@
 
 <script>
 (function () {
-    // ===== CONFIGURAÇÃO (a senha NÃO fica aqui: ela é validada no Cloudflare) =====
+    // ===== CONFIGURAÇÃO =====
     var API = 'https://api-paroquia.paroquiasjoaoboscons.workers.dev';
-    // Endereço do app das comunidades (ajuste se o seu for diferente)
-    var COMUNIDADES_URL = '../carmo/index.html';
-    // ==============================================================================
+    var COMUNIDADES_URL = '../comunidades/carmo/index.html';
+    // ========================
 
     var CHAVE = 'adm_hub_auth';
     var $ = function (id) { return document.getElementById(id); };
@@ -141,7 +179,6 @@
 
     function basic(senha) { return 'Basic ' + btoa('hub:' + unescape(encodeURIComponent(senha))); }
 
-    // devolve: 'ok' | 'negada' | 'erro'
     async function validar(senha) {
         try {
             var r = await fetch(API + '/admin/hub/ping', { headers: { Authorization: basic(senha) } });
@@ -168,45 +205,72 @@
 
     $('sair').addEventListener('click', function () { esquecer(); mostrarLogin(); });
 
-    // Já tinha entrado antes? Revalida em segundo plano (se a senha mudou no Cloudflare, pede de novo)
     (async function () {
         var salva = lembrado();
         if (!salva) { mostrarLogin(); return; }
-        mostrarMenu(); // abre rápido, mesmo offline
+        mostrarMenu();
         var r = await validar(salva);
         if (r === 'negada') { esquecer(); mostrarLogin(); $('erro').textContent = 'A senha foi alterada. Digite a nova.'; }
     })();
 
-    // ===== INSTALADOR DO APP =====
+    // ===== INÍCIO: LÓGICA DA NOTIFICAÇÃO AUTOMÁTICA DE INSTALAÇÃO =====
     var standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
     var ios = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
     var fechado = false;
     try { fechado = sessionStorage.getItem('adm_fechar_instalar') === '1'; } catch (_) {}
 
-    function mostrarInstalar(texto, comBotao) {
+    function abrirNotificacaoInstalar(texto, comBotao) {
         if (standalone || fechado) return;
         $('instalar-txt').textContent = texto;
         $('btn-instalar').hidden = !comBotao;
-        $('instalar').hidden = false;
+        $('modal-instalar').hidden = false;
     }
-    if (ios) {
-        mostrarInstalar('No iPhone: toque em Compartilhar e depois em "Adicionar à Tela de Início".', false);
+
+    function pwaPronto() {
+        abrirNotificacaoInstalar('Instale o aplicativo da Administração na tela inicial do seu celular para acesso rápido.', true);
     }
-    function pronto() { mostrarInstalar('Tenha a Administração na tela inicial do celular.', true); }
-    if (window.__pwa) pronto();
-    window.addEventListener('pwa-pronto', pronto);
+
+    if (!standalone && !fechado) {
+        if (ios) {
+            setTimeout(function () {
+                abrirNotificacaoInstalar('No iPhone/iPad: toque no ícone Compartilhar (quadrado com seta) na barra do navegador e escolha "Adicionar à Tela de Início".', false);
+            }, 600);
+        } else {
+            if (window.__pwa) pwaPronto();
+            window.addEventListener('pwa-pronto', pwaPronto);
+
+            // Se o navegador demorar ou já tiver bloqueado o prompt automático, avisa como instalar pelo menu
+            setTimeout(function () {
+                if (!window.__pwa && !standalone && !fechado && $('modal-instalar').hidden) {
+                    abrirNotificacaoInstalar('Para instalar o app agora, toque nos 3 pontinhos (⋮) do navegador e selecione "Instalar aplicativo" ou "Adicionar à tela inicial".', false);
+                }
+            }, 2500);
+        }
+    }
 
     $('btn-instalar').addEventListener('click', async function () {
-        var ev = window.__pwa; if (!ev) return;
+        var ev = window.__pwa;
+        if (!ev) return;
         ev.prompt();
-        try { await ev.userChoice; } catch (_) {}
-        window.__pwa = null; $('instalar').hidden = true;
+        try {
+            var escolha = await ev.userChoice;
+            if (escolha && escolha.outcome === 'accepted') {
+                $('modal-instalar').hidden = true;
+            }
+        } catch (_) {}
+        window.__pwa = null;
+        $('modal-instalar').hidden = true;
     });
+
     $('fechar-instalar').addEventListener('click', function () {
-        $('instalar').hidden = true;
+        $('modal-instalar').hidden = true;
         try { sessionStorage.setItem('adm_fechar_instalar', '1'); } catch (_) {}
     });
-    window.addEventListener('appinstalled', function () { $('instalar').hidden = true; });
+
+    window.addEventListener('appinstalled', function () {
+        $('modal-instalar').hidden = true;
+    });
+    // ===== FIM: LÓGICA DA NOTIFICAÇÃO AUTOMÁTICA DE INSTALAÇÃO =====
 })();
 </script>
 </body>
