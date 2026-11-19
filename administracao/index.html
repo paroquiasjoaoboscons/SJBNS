@@ -11,16 +11,23 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Adm. Paroquial">
     <link rel="apple-touch-icon" href="icone-admin-192.png" />
-    <meta http-equiv="refresh" content="1;url=links.html">
     <style>
-        body { background: #4b2d6e; color: #c9a24b; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: sans-serif; }
-        a { color: #c9a24b; }
+        body { background: #4b2d6e; color: #c9a24b; display: flex; flex-direction: column; gap: 12px; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: sans-serif; }
+        a { color: #c9a24b; font-weight: bold; }
     </style>
     <script>
-        if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw-admin.js', { scope: './' }).catch(()=>{});
-        // Espera um instante para o navegador registrar o PWA e então abre o hub.
-        setTimeout(() => location.replace('links.html'), 600);
+        (async function () {
+            if ('serviceWorker' in navigator) {
+                try {
+                    await navigator.serviceWorker.register('sw-admin.js', { scope: './' });
+                } catch (_) {}
+            }
+            location.replace('links.html');
+        })();
     </script>
 </head>
-<body><a href="links.html">Abrir Administração</a></body>
+<body>
+    <span>Carregando Administração...</span>
+    <a href="links.html">Clique aqui se não abrir automaticamente</a>
+</body>
 </html>
