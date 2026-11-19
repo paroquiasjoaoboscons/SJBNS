@@ -1,6 +1,6 @@
-// ===== INÍCIO: SERVICE WORKER ADMIN v4 =====
-const CACHE = 'adm-paroquial-v4';
-const ARQUIVOS = ['./index.html', './links.html', './manifest.json', './icone-admin-192.png', './icone-admin-512.png'];
+// ===== INÍCIO: SERVICE WORKER ADMIN v5 =====
+const CACHE = 'adm-paroquial-v5';
+const ARQUIVOS = ['./index.html', './links.html', './manifest.json', './icone-192.png', './icone-512.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ARQUIVOS)).catch(() => {}));
@@ -30,4 +30,4 @@ self.addEventListener('fetch', e => {
     }).catch(() => caches.match(req).then(r => r || caches.match('./links.html')))
   );
 });
-// ===== FIM: SERVICE WORKER ADMIN v4 =====
+// ===== FIM: SERVICE WORKER ADMIN v5 =====
