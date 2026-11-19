@@ -8,6 +8,17 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Paróquia São João Bosco">
+    <!-- ===== INÍCIO: ÍCONE APPLE E CAPTURA PWA RAIZ ===== -->
+    <link rel="apple-touch-icon" href="icone-192.png">
+    <script>
+      window.__pwaRaiz = null;
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        window.__pwaRaiz = e;
+        window.dispatchEvent(new Event('pwa-raiz-pronto'));
+      });
+    </script>
+    <!-- ===== FIM: ÍCONE APPLE E CAPTURA PWA RAIZ ===== -->
     <title>Paróquia São João Bosco</title>
     <link rel="manifest" href="manifest-paroquia.json">
     <script>
@@ -258,6 +269,48 @@
             color: #fff; padding: 24px 10px 8px; font-size: .82rem; font-weight: 700;
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
+
+        /* ===== INÍCIO: CSS NOTIFICAÇÃO/MODAL INSTALAÇÃO RAIZ ===== */
+        .modal-pwa-raiz {
+            position: fixed; inset: 0; z-index: 3000;
+            background: rgba(15, 8, 25, 0.74);
+            backdrop-filter: blur(3px);
+            display: flex; align-items: center; justify-content: center;
+            padding: 18px;
+            animation: fadePwaRaiz .25s ease;
+        }
+        @keyframes fadePwaRaiz { from { opacity: 0; } to { opacity: 1; } }
+        .modal-pwa-raiz-box {
+            background: #fff; width: 100%; max-width: 390px;
+            border-radius: 22px; padding: 24px 20px 20px;
+            text-align: center;
+            border-top: 5px solid var(--dourado);
+            box-shadow: 0 14px 36px rgba(0,0,0,.38);
+            animation: sobePwaRaiz .28s ease;
+        }
+        @keyframes sobePwaRaiz { from { transform: translateY(20px) scale(.96); opacity: 0; } to { transform: none; opacity: 1; } }
+        .modal-pwa-raiz-icone {
+            width: 74px; height: 74px; border-radius: 18px;
+            margin: 0 auto 14px; display: block;
+            border: 2px solid var(--dourado);
+            box-shadow: 0 4px 12px rgba(75,45,110,.2);
+        }
+        .modal-pwa-raiz-box h3 { color: var(--primaria); font-size: 1.22rem; margin-bottom: 8px; }
+        .modal-pwa-raiz-box p { color: var(--cinza); font-size: .92rem; line-height: 1.45; margin-bottom: 18px; }
+        .btn-instalar-raiz {
+            width: 100%; padding: 14px; border: 0; border-radius: 12px;
+            background: linear-gradient(135deg, var(--primaria), var(--secundaria));
+            color: #fff; font-size: 1rem; font-weight: 700;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            cursor: pointer; box-shadow: 0 4px 14px rgba(75,45,110,.35);
+            margin-bottom: 10px;
+        }
+        .btn-instalar-raiz i { color: var(--dourado); font-size: 1.1rem; }
+        .btn-depois-raiz {
+            background: none; border: 0; color: var(--cinza);
+            font-size: .88rem; padding: 8px 14px; cursor: pointer; text-decoration: underline;
+        }
+        /* ===== FIM: CSS NOTIFICAÇÃO/MODAL INSTALAÇÃO RAIZ ===== */
     </style>
 </head>
 <body>
@@ -471,6 +524,20 @@
             <div id="grade-igreja" class="grade grade-igreja"></div>
         </div>
     </div>
+
+    <!-- ===== INÍCIO: HTML NOTIFICAÇÃO AUTOMÁTICA INSTALAÇÃO RAIZ ===== -->
+    <div class="modal-pwa-raiz" id="modal-instalar-raiz" hidden>
+        <div class="modal-pwa-raiz-box" role="dialog" aria-modal="true" aria-labelledby="titulo-pwa-raiz">
+            <img src="icone-192.png" alt="Ícone Paróquia São João Bosco" class="modal-pwa-raiz-icone" onerror="this.style.display='none'">
+            <h3 id="titulo-pwa-raiz">Instalar App da Paróquia</h3>
+            <p id="instalar-raiz-txt">Instale o aplicativo da Paróquia São João Bosco na tela inicial do seu celular para acesso rápido.</p>
+            <button id="btn-instalar-raiz" class="btn-instalar-raiz" type="button">
+                <i class="fas fa-download"></i> Instalar Aplicativo Agora
+            </button>
+            <button id="fechar-instalar-raiz" class="btn-depois-raiz" type="button">Agora não</button>
+        </div>
+    </div>
+    <!-- ===== FIM: HTML NOTIFICAÇÃO AUTOMÁTICA INSTALAÇÃO RAIZ ===== -->
 
     <nav class="menu-inferior">
         <button class="menu-item ativo" type="button" data-aba="liturgia"><i class="fas fa-book-open"></i><span>Início</span></button>
@@ -1189,6 +1256,66 @@
         document.addEventListener('visibilitychange', () => {
             if (!document.hidden && Date.now() - ultimaCarga > 5 * 60 * 1000) carregarTudo();
         });
+
+        /* ===== INÍCIO: LÓGICA NOTIFICAÇÃO AUTOMÁTICA INSTALAÇÃO RAIZ ===== */
+        (function () {
+            const standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+            const ios = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+            let fechado = false;
+            try { fechado = sessionStorage.getItem('paroquia_fechar_instalar') === '1'; } catch (_) {}
+
+            function abrirModalRaiz(texto, comBotao) {
+                if (standalone || fechado) return;
+                $('instalar-raiz-txt').textContent = texto;
+                $('btn-instalar-raiz').hidden = !comBotao;
+                $('modal-instalar-raiz').hidden = false;
+            }
+
+            function pwaRaizPronto() {
+                abrirModalRaiz('Instale o aplicativo da Paróquia São João Bosco na tela inicial do seu celular para acesso rápido.', true);
+            }
+
+            if (!standalone && !fechado) {
+                if (ios) {
+                    setTimeout(() => {
+                        abrirModalRaiz('No iPhone/iPad: toque no ícone Compartilhar na barra do navegador e escolha "Adicionar à Tela de Início".', false);
+                    }, 600);
+                } else {
+                    if (window.__pwaRaiz) pwaRaizPronto();
+                    window.addEventListener('pwa-raiz-pronto', pwaRaizPronto);
+
+                    setTimeout(() => {
+                        if (!window.__pwaRaiz && !standalone && !fechado && $('modal-instalar-raiz').hidden) {
+                            abrirModalRaiz('Para instalar o app agora, toque nos 3 pontinhos (⋮) do navegador e selecione "Instalar aplicativo" ou "Adicionar à tela inicial".', false);
+                        }
+                    }, 2500);
+                }
+            }
+
+            $('btn-instalar-raiz').addEventListener('click', async () => {
+                const ev = window.__pwaRaiz;
+                if (!ev) return;
+                ev.prompt();
+                try {
+                    const escolha = await ev.userChoice;
+                    if (escolha && escolha.outcome === 'accepted') {
+                        $('modal-instalar-raiz').hidden = true;
+                    }
+                } catch (_) {}
+                window.__pwaRaiz = null;
+                $('modal-instalar-raiz').hidden = true;
+            });
+
+            $('fechar-instalar-raiz').addEventListener('click', () => {
+                $('modal-instalar-raiz').hidden = true;
+                try { sessionStorage.setItem('paroquia_fechar_instalar', '1'); } catch (_) {}
+            });
+
+            window.addEventListener('appinstalled', () => {
+                $('modal-instalar-raiz').hidden = true;
+            });
+        })();
+        /* ===== FIM: LÓGICA NOTIFICAÇÃO AUTOMÁTICA INSTALAÇÃO RAIZ ===== */
     </script>
 </body>
 </html>
